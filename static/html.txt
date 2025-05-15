@@ -1,0 +1,2478 @@
+## Nova Custom Reusable Layout Enhanced V6 - HTML
+
+## Rover Version - Updates
+## v2 - headlinePad, signoffTextPad, signoffTextMobileTopPad, and buttonOrLinkPad
+## v3 - subHeadPad with no buttonOrLink, Left / Right column & stacked, image_text-mobile body font-size added
+## v4 - footer and FN disclaimer links underlined, unsubscribe url & urText logic, TEXT_IMAGE / IMAGE_TEXT padding, font-size, & line-height, updated chevron img url
+## v5 - updates and add ons
+## BANNER mobile - subHeading desktop td - Added class main-copy, removed h2 tag. $bannerHeadlinePad update top & bottom from 25px to 15px
+### Removed background-color from desktop image td, and added bottom padding to mobile cta button.
+## UnsubscribeMessage, UrlText, Url - added conditional logic for punctuation and unsub link placement.
+## ICON_TEXT_2_COLUMN - Added logic for 1 column. Left & Right col mobile - moved if logic for 'body' outside of p tag. Desktop 1 column padding - $bodyPad for body with link, button, or no cta. Mobile cta link - decreased padding
+### $align2col, mobile - set alginment left, if alignment has value set to value, else set center. Set backgroundColor / $bgcolor2col default to #ffffff
+## LOGO - added headers backgroundImageSource & imageSource to use other logos, alignment, backgroundColor, $logoWidth add width value to style or mobile width style1.
+## $gray-bg set padding styles for $subHeadPad, $buttonOrLinkPad
+## TEXT_TEXT - set $bgcolor-m, desktop $padding, and mobile $padBody, $padBody2. Created spacer - 25px height after gray bg of TEXT_TEXT. Desktop - set $style and $style1, set $padLeft to body if contains px
+## TEXT_IMAGE / IMAGE_TEXT - added table in desktop text column, styles class body-text & body-text-sm, adjusted padding, set backgroundColor to tile's td & image column's td
+## m-container-break - dup of m-container without padding-bottom for SECTION_BREAK
+## Classnames - added classnames for different font sizes in css head. Implemented conditional logic for style / style1 field to use classnames for most of the components.
+## backgroundColor - Set the value gray or grey to #fafafa TEXT_IMAGE / IMAGE_TEXT, BANNER, ICON_TEXT_2_COLUMN. Fixed the set variable $bgcolor-m to the backgroundColor.
+## ICON_TEXT_2_COLUMN - wrapped a table around to add backgroundColor and rounded corners if using SECTION_BREAK.
+### Added new types - ICON_TEXT single column and FOOTNOTE
+## Banner and ICON_TEXT - $style1 to add bottom padding: $buttonOrLinkPad
+## SECTION_BREAK - placed outside of email's table, included rounded outer table
+## Rounded corners - Main-content and components when used with SECTION_BREAK - Replaced rounded corner white img with html for DMF and remove white space above & below email's images
+### v6 - RTL add-on, updated LOCALE path, rtl direction, & padding, updated arrow.png image url and added arrow-rtl.png url for ar_SA. Added ja unsub text. Updated style/style1 fontsize to use specific classnames only for most of the component types.
+
+##### Template Var
+#set( $bgcolor-m = "#ffffff" )
+#set( $logo = "" ) ## define blank logo
+#set( $locale = $request.getRootElement().getChild("EVENTPAYLOAD").getChild("LOCALE").value.trim() )
+#set( $ROWS = $request.getRootElement().getChild("EVENTPAYLOAD").getChild("CUSTOM_XML").getChild("LAYOUT").getChild("ROWS").getChildren("ROW") )
+#set( $appleLogo = $request.getRootElement().getChild("EVENTPAYLOAD").getChild("CUSTOM_XML").getChild("LAYOUT").getChild("appleLogo").getValue() )
+
+## Set up theme
+#set( $theme = '' )
+#set( $customCSS = '' )
+#foreach( $ROW in $ROWS )
+	#if( $ROW.getChild('TYPE').getValue() == 'THEME' )
+		#set( $theme = $ROW.getChild('CONTENT').getChild('style').getValue() )
+		#set( $customCSS = $ROW.getChild('CONTENT').getChild('style1').getValue() )
+	#end
+#end
+
+#set( $imageUrl = 'https://seeddownload.cdn-apple.com/prod/public/nova/retail-smb/email' )
+#set( $lang = $locale.split('_').get(0) )
+
+#if(($locale.matches("ar_SA")))
+  #set( $localeDir = "rtl" )
+  #set( $localeDirRTL = "true" )
+  #set( $arrowImg = "https://gnv.apple.com/GenevaTrafficServer/GetAsset/nova.prod.asset.nova-email-assets/BANNER_1730848107043.png" )
+#else
+  #set( $localeDir = "" )
+  #set( $localeDirRTL = "false" )
+  #set( $arrowImg = "https://gnv.apple.com/GenevaTrafficServer/GetAsset/nova.prod.asset.nova-email-assets/BANNER_1730848157047.png" )
+#end
+
+## prevent th_TH ascenders/descenders from overlapping
+#if(($locale.matches("th_TH")))
+	#set( $subHeadLineHeight = 'line-height:28px;' )
+#else
+	#set( $subHeadLineHeight = 'line-height:28px;' )
+#end
+
+## Unsubscribe local punctuation
+#if(($locale.matches("zh_CN")) || ($locale.matches("zh_MO")) || ($locale.matches("zh_HK")) || ($locale.matches("zh_TW")))
+	#set( $localePunc = '。' )
+  #set( $localeUnsub = '' )
+#elseif(($locale.matches("ja_JP")))
+	#set( $localeUnsub = 'してください' )
+  #set( $localePunc = '。' )
+#else
+	#set( $localePunc = '.' )
+  #set( $localeUnsub = '' )
+#end
+
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office" dir="$localeDir" lang="$lang">
+<head>
+	## The response requires the subject to be in the ROWS
+	#foreach( $ROW in $ROWS )
+		#if( $ROW.getChild('TYPE').getValue() == 'SUBJECT' )
+			<title>$ROW.getChild('CONTENT').getChild('headLine').getValue()</title>
+		#end
+	#end
+
+	<meta http-equiv="content-type" content="text/html;charset=utf-8">
+
+	<meta name="viewport" content="width=device-width">
+  <style type="text/css">
+  * {
+  -webkit-font-smoothing: antialiased;
+  color: #333333;
+  font-family: system-ui,-apple-system,BlinkMacSystemFont,'Segoe UI','Helvetica Neue',Helvetica,Arial,sans-serif;
+  font-weight: 400;
+  text-rendering: optimizelegibility; }
+
+  strong
+  { font-weight:bold; }
+
+  td
+  { font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+
+
+  #if( $locale.contains("ko_KR") )
+		word-break: keep-all;
+	#end
+
+	}
+
+	body {
+		color: #333333;
+		width: 100% !important;
+		background-color: #f2f2f2; }
+
+  a[x-apple-data-detectors] {
+    color: inherit !important;
+    text-decoration: none !important;
+  }
+  a {
+    color: #0070c9;
+    text-decoration: none;
+  }
+  a:hover {
+    text-decoration: underline;
+  }
+
+a, a.link, a.link:link {
+  text-decoration: none; }
+
+a, a.aapl-link, a.aapl-link:link, .m-legal-wrapper-unsub a {
+  text-decoration: none; }
+
+a.aapl-link:hover, .m-legal-wrapper-unsub a:hover {
+  text-decoration: underline; }
+
+/* Font size styles  */
+
+.headline {
+  font-size: 31px;
+  line-height: 34px;
+  font-weight:600 !important;
+}
+
+.headline-reduce {
+  font-size: 24px;
+  line-height: 29px;
+  font-weight:600 !important;
+}
+
+.main-copy {
+	font-weight: 400;
+	font-size: 20px;
+	line-height: 30px;
+	color: #333333;
+}
+
+.semibold {
+  font-weight:600 !important;
+}
+
+.header {
+  font-size: 19px;
+  line-height: 23px;
+  font-weight: 600 !important;
+}
+
+.subhead {
+  font-size: 19px;
+  line-height: 27px;
+}
+
+.subhead-md {
+  font-size: 17px;
+  line-height: 25px;
+}
+
+.body-text {
+	font-size: 14px;
+#if(($locale.matches("th_TH")) || ($locale.matches("ja_JP")) || ($locale.matches("zh_CN")) || ($locale.matches("zh_MO")) || ($locale.matches("zh_HK")) || ($locale.matches("zh_TW")))
+	line-height: 22px;
+#else
+  line-height: 20px;
+#end
+}
+
+.body-text-sm {
+	font-size: 12px;
+#if(($locale.matches("th_TH")) || ($locale.matches("ja_JP")) || ($locale.matches("zh_CN")) || ($locale.matches("zh_MO")) || ($locale.matches("zh_HK")) || ($locale.matches("zh_TW")))
+  line-height: 20px;
+#else
+	line-height: 18px;
+#end
+}
+
+.footnote {
+	font-size: 10px !important;
+	line-height: 14px !important;
+}
+.footnote a {
+	text-decoration: underline !important;
+}
+
+.aapl-footer-link a {
+  text-decoration: underline !important;
+  color: #555555 !important; }
+
+.aapl-footer-addr a {
+	color: #888888 !important;
+}
+
+.aapl-body-link a {
+  color: #0070c9 !important;
+  text-decoration: none; }
+
+.m-legal-wrapper-unsub a {
+  color: #555555 !important;
+  text-decoration: none; }
+
+* {
+  text-rendering: optimizelegibility; }
+
+a, *:link, .aapl-desktop *:link, .aapl-mobile *:link, .aapl-desktop a {
+  color: #0070c9; }
+
+.m-footer *:link, #aapl-bnav *:link, #aapl-footer *:link {
+  color: #555555; }
+
+.m-bnav *:link, #aapl-bnav *:link {
+  color: #999999; }
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+  border-style: none;
+  padding: 0;
+  font-weight: normal; }
+
+button {
+  margin: 0 !important; }
+
+p {
+  margin: 0 !important; }
+
+.nohide {
+  visibility: visible !important; }
+
+/*
+  Hide image anchors on desktop but display on mobile
+  Fixes an outlook bug
+*/
+.m-image {
+  display: none; }
+
+ .msofix-f-legal a, .msofix-f-legal a:hover, .msofix-f-legal a:visited {
+    color: #555555 !important;
+  }
+
+/* Retina Image Replacement on Desktop */
+@media only screen and (min-device-width: 569px) and (min-device-pixel-ratio: 2), only screen and (min-device-width: 569px) and (-webkit-min-device-pixel-ratio: 2) {
+  img {
+    visibility: hidden; }
+  *.more {
+    visibility: visible !important; }
+  .apple_standard_ff {
+    background: url("$imageUrl/images/apple_standard_ff_2x.png") no-repeat 50% 0;
+    background-size: 21px 26px; } }
+
+/*Mobile*/
+@media only screen and (max-device-width: 568px) {
+  body {
+    color: #333333;
+    background-color: #f2f2f2; }
+  /*gmail*/
+  .hide {
+    display: none !important; }
+  .m-image {
+    display: block; }
+  a[x-apple-data-detectors] {
+    color: inherit !important;
+    text-decoration: none !important;
+    font-size: inherit !important;
+    font-family: inherit !important;
+    font-weight: inherit !important;
+    line-height: inherit !important; }
+  *.aapl-desktop {
+    display: none; }
+  .aapl-mobile,
+  .m-legal {
+    color: #333;
+    display: block !important;
+    font-family: -apple-system, -webkit-system-font, helvetica neue;
+    font-size: 17px;
+    font-weight: 400;
+    line-height: 26px;
+    margin: 0 !important;
+    -webkit-font-smoothing: antialiased;
+    -webkit-text-size-adjust: none !important;
+
+	  #if( $locale.contains("ko_KR") )
+			word-break: keep-all;
+		#end
+
+	}
+  .aapl-mobile img {
+    -webkit-touch-callout: none; }
+  .m-container {
+    background-color: #fff;
+    display: block !important;
+    margin: 0 auto;
+    max-height: inherit !important;
+    overflow: visible !important;
+    width: 100% !important;
+    max-width: 414px !important;
+	  padding-bottom: 25px;}
+ .m-container-break {
+    background-color: #fff;
+    display: block !important;
+    margin: 0 auto;
+    max-height: inherit !important;
+    overflow: visible !important;
+    width: 100% !important;
+    max-width: 414px !important;}
+  .m-row-copy {
+    margin: 0;
+    line-height: 1.4em; }
+  .m-body-gutter {
+    padding: 0 5%; }
+  .m-main-body p {
+    margin: 10px 0 0 0;
+    line-height: 1.5em; }
+  .m-legal {
+    max-height: inherit !important;
+    overflow: visible !important;
+    background-color: #f2f2f2;
+    color: #999;
+    font-size: 11px;
+    line-height: 1.44em;
+    width: 100% !important; }
+  .m-legal a {
+    color: inherit; }
+  .m-legal-wrapper {
+    max-width: 414px !important;
+    margin: 0 auto;
+    word-wrap: break-word;
+    box-sizing: border-box;
+    padding: 0 16px 35px 16px; }
+  .m-image-bleed {
+    display: block; }
+	.m-hero-body
+	 { padding-bottom:20px }
+
+	}
+</style>
+
+<style type="text/css">
+$customCSS
+</style>
+
+<!--[if gte mso 9]>
+<style type="text/css">
+   body
+   { background:#ffffff }
+
+</style>
+
+<![endif]-->
+
+
+</head>
+<body class="$locale" style="margin:0;padding:0;" bgcolor="#f2f2f2">
+<!-- V5 -->
+
+
+
+#* ********
+	Mobile
+******** *#
+<div style="width:0;max-height:0;overflow:hidden;display:none;" class="m-container">
+	<div  dir="$localeDir" class="aapl-mobile">
+
+## Hide logo if CSV value is nologo
+#foreach( $ROW in $ROWS )
+  #if( $ROW.getChild('TYPE').getValue() == 'LOGO' )
+    #set( $logo = $ROW.getChild('CONTENT').getChild('appleLogo').getValue() )
+    #set( $logoAlt = $ROW.getChild('CONTENT').getChild('logo').getValue() )
+    #set( $alignment = $ROW.getChild('CONTENT').getChild('alignment').getValue() )
+    #set( $imageActionUrl = $ROW.getChild('CONTENT').getChild('imageActionUrl').getValue() )
+    #set( $backgroundImage = $ROW.getChild('CONTENT').getChild('backgroundImageSource').getValue() )
+    #set( $backgroundImageMobile = $ROW.getChild('CONTENT').getChild('backgroundImageSourceMobile').getValue() )
+    #set( $image = $ROW.getChild('CONTENT').getChild('imageSource').getValue() )
+    #set( $imageMobile = $ROW.getChild('CONTENT').getChild('imageSourceMobile').getValue() )
+
+    ### Set background color
+    #if( $ROW.getChild('CONTENT').getChild('backgroundColor').getValue() != '' )
+      #set( $backgroundColor = 'background-color:' + $ROW.getChild('CONTENT').getChild('backgroundColor').getValue() + ';' )
+    #else
+      #set( $backgroundColor = '' )
+    #end
+
+    ### Set alignment
+    #if( $alignment != '' )
+      #set( $alignLogo = $alignment )
+    #else
+      #set( $alignLogo = 'left' )
+    #end
+
+    #if( $ROW.getChild('CONTENT').getChild('style1').getValue() != '' )
+      #set( $logoWidth = $ROW.getChild('CONTENT').getChild('style1').getValue() )
+      #set( $logoWidthpx = 'width:' + $ROW.getChild('CONTENT').getChild('style1').getValue() + 'px')
+    #else
+      #set( $logoWidth = $ROW.getChild('CONTENT').getChild('style').getValue() )
+      #set( $logoWidthpx = 'width:' + $ROW.getChild('CONTENT').getChild('style').getValue() + 'px')
+    #end
+
+    ### Desktop or Mobile logo image that's not apple logo
+    #if( $backgroundImageMobile != '' )
+      #set( $bglogoImg = $backgroundImageMobile )
+    #else
+      #set( $bglogoImg = $backgroundImage )
+    #end
+
+    #if( $imageMobile != '' )
+      #set( $logoImg = $imageMobile )
+    #else
+      #set( $logoImg = $image )
+    #end
+  #end
+#end
+
+	#if( $logo == 'nologo' && $bglogoImg == '' && $logoImg == '' )
+		## If nologo, leave blank
+
+	#else
+  ## Default to existing Apple logo for backwards compatibility
+  #if( $backgroundImage != '' || $backgroundImageMobile != '' )
+    <div  dir="$localeDir" style="padding:0;$backgroundColor">
+    #else
+    <div  dir="$localeDir" class="m-body-gutter" style="$backgroundColor">
+  #end
+
+		#if( $logo != '' && $logo.toString().contains("https"))
+			<img class="nohide" src="$logo" width="20" height="26" style="display:block;padding:16px 0 35px 0;font-size:22px;outline:0;color:#999999;" border="0" alt="">
+		#elseif(  $logo == 'nologo' && $backgroundImage != '' || $logo == '' && $backgroundImage != '' )
+      #if( $imageActionUrl != '' )<a href="$imageActionUrl">#end<img class="nohide" src="$bglogoImg" style="display:block;margin:0;visibility:initial;padding:16px 0 35px 0;max-width:100%;" border="0" alt="$logoAlt">#if( $imageActionUrl != '' )</a>#end
+    #elseif( $logo == 'nologo' && $image != '' || $logo == '' && $image != '')
+      #if( $imageActionUrl != '' )<a href="$imageActionUrl">#end<img class="nohide" src="$logoImg" width="$logoWidth" style="display:block;margin:0;visibility:initial;padding:16px 0 35px 0;$logoWidthpx;" border="0" alt="$logoAlt">#if( $imageActionUrl != '' )</a>#end
+    #else
+			<img class="nohide" src="$imageUrl/images/apple_standard_ff_2x.png" width="20" height="26" style="display:block;padding:16px 0 35px 0;font-size:22px;outline:0;color:#999999;" border="0" alt="">
+		#end
+		</div>
+	#end
+	## End hide/show logo
+
+	#set( $lastRowTypeM = '' )
+
+	#foreach( $ROW in $ROWS )
+		#set( $counter = $velocityCount )
+	#if( $ROW.getChild('TYPE').getValue() == 'BANNER' )
+
+## Begin banner/banner-mobile.vm ###################
+
+#### Short var
+#set( $align_m = $ROW.getChild('CONTENT').getChild('alignment').getValue() )
+#set( $backgroundColor = $ROW.getChild('CONTENT').getChild('backgroundColor').getValue() )
+#set( $style = $ROW.getChild('CONTENT').getChild('style').getValue() )
+#set( $style1 = $ROW.getChild('CONTENT').getChild('style1').getValue() )
+
+#set( $mobileImage = "" )
+#set( $mobileImage = $ROW.getChild('CONTENT').getChild('imageSourceMobile').getValue() )
+
+#set( $mobileImageBg = "" )
+#set( $mobileImageBg = $ROW.getChild('CONTENT').getChild('backgroundImageSourceMobile').getValue() )
+
+#if( $localeDirRTL ==  "true" )
+  #set( $align_m = "right" )
+#else
+  #set( $align_m = "left" )
+#end
+
+#set( $bannerImgStyle = $ROW.getChild('CONTENT').getChild('style').getValue() )
+
+#if( $bannerImgStyle == "cropped" )
+	#set( $alignImg_m = "center" )
+#end
+
+## Default white background color
+
+#if( $backgroundColor == 'gray' || $backgroundColor == 'grey' || $style == 'gray-bg' )
+  #set( $bgcolor-m = '#fafafa' )
+#elseif( $backgroundColor != '' && $backgroundColor != 'gray' || $backgroundColor != '' && $backgroundColor != 'grey' )
+  #set( $bgcolor-m = $backgroundColor )
+#else
+	#set( $bgcolor-m = '#ffffff' )
+#end
+
+## Set header style to use a class value in subHeading. Default class is subhead
+#if( $style == 'subhead' )
+  #set( $classHeadline = 'subhead semibold' )
+#else
+  #set( $classHeadline = 'headline-reduce' )
+#end
+
+#if( $style1 == 'subhead-md' )
+  #set( $className = 'subhead-md' )
+#else
+  #set( $className = 'subhead' )
+#end
+
+#if( $theme == 'AAW' && $ROW.getChild('CONTENT').getChild('imageActionUrl').getValue() != '' )
+	#set( $bannerURL = $ROW.getChild('CONTENT').getChild('imageActionUrl').getValue() )
+#else
+	#set( $bannerURL = 'https://apple.com' )
+#end
+
+#if( $theme == 'AAW' )
+	#if( $localeDirRTL == "true" )
+    #set( $bannerHeadlinePad = '25px 0 15px 20px' )
+  #else
+    #set( $bannerHeadlinePad = '25px 20px 15px 0' )
+  #end
+	#set( $subHeadPad = 'padding:0 0 25px 0;' )
+	#set( $subHeadLineHeight = 'line-height:28px;' )
+	#set( $subHeadFont = 'font-size:19px;' )
+	#set( $subHeadFontWeight = '600' )
+#else
+  #if( $localeDirRTL == "true" )
+    #set( $bannerHeadlinePad = '20px 20px 20px 0' )
+  #else
+	  #set( $bannerHeadlinePad = '20px 0 20px 20px' )
+  #end
+	#set( $subHeadLineHeight = '' )
+	#set( $subHeadFont = '' )
+	#set( $subHeadPad = '' )
+	#set( $subHeadFontWeight = '500' )
+#end
+
+#if($align_m == "center" )
+	#set( $bannerHeadlinePad = '25px 30px');
+	#set( $subHeadPad = 'padding:0 30px 25px;');
+
+#elseif($align_m == "right" )
+	#set( $bannerHeadlinePad = '25px 0 15px 20px' )
+	#set( $subHeadPad = 'padding:0 0 25px 0;' )
+#end
+
+#if( $theme == 'AAW' && $ROW.getChild('CONTENT').getChild('style').getValue() == 'stack-links')
+  #set( $buttonOrLinkPad = 'padding-bottom:20px;')
+#else
+  ### set style1 to custumize cta button's bottom padding
+  #if( $ROW.getChild('CONTENT').getChild('buttonOrLink').getValue() != '' && $style1.contains('px') )
+    #set( $buttonOrLinkPad = 'padding-bottom:' + $style1 + ';' )
+  #else
+	  #set( $buttonOrLinkPad = 'padding-bottom:25px;' )
+  #end
+#end
+
+#if( $ROW.getChild('CONTENT').getChild('backgroundImageSource').getValue() != '' )
+	#if( $bannerImgStyle == "cropped" )
+  <div class="m-body-gutter" style="background-color:$bgcolor-m; text-align:$align_m;">
+    <a href="$bannerURL" class="m-image-link" style="padding:20px 0; display:inline-block; text-align:$alignImg_m; width:100%;height:auto;outline:0;">
+      ## Use mobile field if present
+      #if( $mobileImageBg != "" )
+        <img style="outline:0;border:0;max-width:100%;margin:0 auto; display:block;" class="nohide" src="$ROW.getChild('CONTENT').getChild('backgroundImageSourceMobile').getValue()" alt="">
+      #else
+        <img style="outline:0;border:0;max-width:100%;margin:0 auto; display:block;" class="nohide" src="$ROW.getChild('CONTENT').getChild('backgroundImageSource').getValue()" alt="">
+      #end
+    </a>
+  </div>
+	#else
+  <div style="background-color:$bgcolor-m;">
+    <a href="$bannerURL" class="m-image-link" style="width:100%;height:auto;outline:0;">
+      ## Use mobile field if present
+      #if( $mobileImageBg != "" )
+        <img style="outline:0;border:0;max-width:100%;margin:0;display:block;" class="nohide" src="$ROW.getChild('CONTENT').getChild('backgroundImageSourceMobile').getValue()" alt="">
+      #else
+        <img style="outline:0;border:0;max-width:100%;margin:0;display:block;" class="nohide" src="$ROW.getChild('CONTENT').getChild('backgroundImageSource').getValue()" alt="">
+      #end
+    </a>
+  </div>
+	#end
+#end
+
+<div dir="$localeDir" class="m-body-gutter" style="background-color:$bgcolor-m;text-align:$align_m;">
+
+#if( $ROW.getChild('CONTENT').getChild('headLine').getValue() != '' )
+  <h1 class="$classHeadline" style="margin:0;padding:$bannerHeadlinePad;background-color: $bgcolor-m;border-style: none;">
+    $ROW.getChild('CONTENT').getChild('headLine').getValue()
+  </h1>
+#end
+
+#if( $ROW.getChild('CONTENT').getChild('subHeading').getValue() != '' )
+  <div class="m-hero-body $className" align="$align_m" style="$subHeadPad">
+  <!--[if !mso]><\!-->
+    $ROW.getChild('CONTENT').getChild('subHeading').getValue()
+  <!-- <![endif]-->
+  </div>
+  #end
+
+#if( $ROW.getChild('CONTENT').getChild('buttonOrLink').getValue() == 'link' && $ROW.getChild('CONTENT').getChild('buttonOrLinkTitle').getValue() != '' )
+  <div dir="$localeDir" align="$align_m" style="$buttonOrLinkPad">
+
+  ## Link source check
+  #if( $ROW.getChild('CONTENT').getChild('buttonOrLinkSource').getValue() != '' )
+    #if( $theme == 'AAW' )
+    <a class="aapl-link $className" href="$ROW.getChild('CONTENT').getChild('buttonOrLinkSource').getValue()" style="color:#0070C9;font-family:-apple-system,-webkit-system-font,SFNSText,Segoe UI,system,Helvetica Neue,Arial,sans-serif;-webkit-font-smoothing:antialiased;">
+      $ROW.getChild('CONTENT').getChild('buttonOrLinkTitle').getValue()<img class="nohide" src="$arrowImg" width="13" height="11" style="display:inline;margin:0" border="0" alt="">
+    </a>
+    #else
+    <a class="aapl-link" href="$ROW.getChild('CONTENT').getChild('buttonOrLinkSource').getValue()" style="color:#0070C9;font-family:-apple-system,-webkit-system-font,SFNSText,Segoe UI,system,Helvetica Neue,Arial,sans-serif;font-weight:400;-webkit-font-smoothing:antialiased;font-size:14px;line-height:20px;">
+      $ROW.getChild('CONTENT').getChild('buttonOrLinkTitle').getValue()<img class="nohide" src="$arrowImg" width="9" height="8" style="display:inline;margin:0" border="0" alt="">
+    </a>
+    #end
+#end
+## End link source check
+  </div>
+	#elseif( $ROW.getChild('CONTENT').getChild('buttonOrLink').getValue() == 'button' )
+  <p class="m-cta" align="$align_m" style="$buttonOrLinkPad">
+    <a href="$ROW.getChild('CONTENT').getChild('buttonOrLinkSource').getValue()">
+      <img class="nohide" src="$ROW.getChild('CONTENT').getChild('buttonImageSource').getValue()" width="${ROW.getChild('CONTENT').getChild('buttonImageWidth').getValue()}" height="${ROW.getChild('CONTENT').getChild('buttonImageHeight').getValue()}" style="display:block;margin:0" border="0" alt="$ROW.getChild('CONTENT').getChild('buttonOrLinkTitle').getValue()">
+    </a>
+  </p>
+	#end
+</div>
+
+## End banner/banner-mobile.vm ###################
+
+#elseif( $ROW.getChild('TYPE').getValue() == 'TEXT_IMAGE' )
+
+## Begin text_image/text_image-mobile.vm ###################
+
+#set( $mobileImage = "" )
+#set( $mobileImage = $ROW.getChild('CONTENT').getChild('imageSourceMobile').getValue() )
+
+### Set backgroundColor for div column
+#set( $backgroundColor = $ROW.getChild('CONTENT').getChild('backgroundColor').getValue() )
+
+#if( $backgroundColor == 'gray' || $backgroundColor == 'grey' )
+  #set( $bgcolor-m = '#fafafa' )
+#elseif( $backgroundColor != '' && $backgroundColor != 'grey' || $backgroundColor != '' && $backgroundColor != 'gray' )
+  #set( $bgcolor-m = $backgroundColor )
+#else
+   #set( $bgcolor-m = '#fafafa' )
+#end
+
+#if( $ROW.getChild('CONTENT').getChild('style').getValue() == 'body-text-sm' || $ROW.getChild('CONTENT').getChild('style1').getValue() == 'body-text-sm' )
+	#set( $bodyFont = 'body-text-sm')
+#else
+	#set( $bodyFont = 'body-text')
+#end
+
+<div style="width:0;max-height:0;overflow:hidden;display:none;padding-bottom:0;background-color:$bgcolor-m;" class="m-container">
+#if( $theme == 'AAW' )
+	<div style="padding:34px 5%;">
+		#if( $ROW.getChild('CONTENT').getChild('headLine').getValue() != '' )
+    <p style="font-size:18px;font-weight:600;line-height:25px;padding-bottom:10px;">$ROW.getChild('CONTENT').getChild('headLine').getValue()</p>
+		#end
+		<p class="$bodyFont">
+			#if( $ROW.getChild('CONTENT').getChild('body').getValue() != '' )
+				$ROW.getChild('CONTENT').getChild('body').getValue()<br><br>
+			#end
+
+			#if( $ROW.getChild('CONTENT').getChild('buttonOrLink').getValue() == 'link' && $ROW.getChild('CONTENT').getChild('buttonOrLinkTitle').getValue() != '' )
+
+      ## Link source check
+      #if( $ROW.getChild('CONTENT').getChild('buttonOrLinkSource').getValue() != '' )
+      <a class="aapl-link" href="$ROW.getChild('CONTENT').getChild('buttonOrLinkSource').getValue()" style="color:#0070C9;">
+        $ROW.getChild('CONTENT').getChild('buttonOrLinkTitle').getValue()<img class="nohide" src="$arrowImg" width="9" height="8" style="display:inline;margin:0" border="0" alt="">
+      </a>
+      #end
+      ## End link source check
+
+			#elseif( $ROW.getChild('CONTENT').getChild('buttonOrLink').getValue() == 'button' )
+      <p class="m-cta" style="padding-bottom: 25px;">
+        <a href="$ROW.getChild('CONTENT').getChild('buttonOrLinkSource').getValue()"><img class="nohide" src="${ROW.getChild('CONTENT').getChild('buttonImageSource').getValue()}" width="{$ROW.getChild('CONTENT').getChild('buttonImageWidth').getValue()}" height="${ROW.getChild('CONTENT').getChild('buttonImageHeight').getValue()}" style="display:block;margin:0" border="0" alt="$ROW.getChild('CONTENT').getChild('buttonOrLinkTitle').getValue()"></a>
+      </p>
+			#end
+		</p>
+	</div>
+
+	<p style="margin:0; padding:0">
+	## <a href="#" class="m-image-link" style="width:100%;height:auto;outline:0;">
+		## Use imageSourceMobile field if present
+		#if( $mobileImage != "" )
+			<img style="outline:0;border:0;max-width:100%;margin:0;display:block;" class="nohide" src="$ROW.getChild('CONTENT').getChild('imageSourceMobile').getValue()" alt="">
+		#else
+			<img style="outline:0;border:0;max-width:100%;margin:0;display:block;" class="nohide" src="$ROW.getChild('CONTENT').getChild('imageSource').getValue()" alt="">
+		#end
+	## </a>
+	</p>
+
+#else
+
+	<p style="margin:0; padding:0">
+		## <a href="#" class="m-image-link" style="width:100%;height:auto;outline:0;">
+		<img style="outline:0;border:0;max-width:100%;margin:0;display:block;" class="nohide" src="$ROW.getChild('CONTENT').getChild('imageSource').getValue()" alt="">
+		## </a>
+		## <img class="nohide" src="$ROW.getChild('CONTENT').getChild('imageSource').getValue()" alt="" style="outline:0;border:0;max-width:100%;width:100%; display:inline-block;">
+	</p>
+
+	<div style="padding:34px 5%;background-color:$bgcolor-m;">
+		#if( $ROW.getChild('CONTENT').getChild('headLine').getValue() != '' )
+		<p style="font-size:19px;font-weight:500;$subHeadLineHeight padding-bottom:10px;">$ROW.getChild('CONTENT').getChild('headLine').getValue()</p>
+		#end
+		<p>
+    #if( $ROW.getChild('CONTENT').getChild('body').getValue() != '' )
+      $ROW.getChild('CONTENT').getChild('body').getValue()<br><br>
+    #end
+
+    #if( $ROW.getChild('CONTENT').getChild('buttonOrLink').getValue() == 'link' && $ROW.getChild('CONTENT').getChild('buttonOrLinkTitle').getValue() != '' )
+    ## Link source check
+    #if( $ROW.getChild('CONTENT').getChild('buttonOrLinkSource').getValue() != '' )
+      <a class="aapl-link" href="$ROW.getChild('CONTENT').getChild('buttonOrLinkSource').getValue()" style="color:#0070C9;">
+        $ROW.getChild('CONTENT').getChild('buttonOrLinkTitle').getValue()<img class="nohide" src="$arrowImg" width="9" height="8" style="display:inline;margin:0" border="0" alt="">
+      </a>
+    #end
+    ## End link source check
+
+    #elseif( $ROW.getChild('CONTENT').getChild('buttonOrLink').getValue() == 'button' )
+      <p class="$bodyFont">
+        <a href="$ROW.getChild('CONTENT').getChild('buttonOrLinkSource').getValue()"><img class="nohide" src="${ROW.getChild('CONTENT').getChild('buttonImageSource').getValue()}" width="{$ROW.getChild('CONTENT').getChild('buttonImageWidth').getValue()}" height="${ROW.getChild('CONTENT').getChild('buttonImageHeight').getValue()}" style="display:block;margin:0" border="0" alt="$ROW.getChild('CONTENT').getChild('buttonOrLinkTitle').getValue()"></a>
+      </p>
+    #end
+		</p>
+	</div>
+#end
+</div>
+
+## End text_image/text_image-mobile.vm ###################
+
+#elseif( $ROW.getChild('TYPE').getValue() == 'IMAGE_TEXT' )
+
+## Begin image_text/image_text-mobile.vm ###################
+
+#set( $mobileImage = "" )
+#set( $mobileImage = $ROW.getChild('CONTENT').getChild('imageSourceMobile').getValue() )
+
+### Set backgroundColor for div column
+#set( $backgroundColor = $ROW.getChild('CONTENT').getChild('backgroundColor').getValue() )
+
+#if( $backgroundColor == 'gray' || $backgroundColor == 'grey' )
+  #set( $bgcolor-m = '#fafafa' )
+#elseif( $backgroundColor != '' && $backgroundColor != 'grey' || $backgroundColor != '' && $backgroundColor != 'gray' )
+  #set( $bgcolor-m = $backgroundColor )
+#else
+   #set( $bgcolor-m = '#fafafa' )
+#end
+
+#if( $ROW.getChild('CONTENT').getChild('style').getValue() == 'body-text-sm' || $ROW.getChild('CONTENT').getChild('style1').getValue() ==  'body-text-sm' )
+	#set( $bodyFont = 'body-text-sm')
+#else
+	#set( $bodyFont = 'body-text')
+#end
+
+<div style="width:0;max-height:0;overflow:hidden;display:none;padding-bottom:0;background-color:$bgcolor-m;" class="m-container">
+	<p style="margin:0; padding:0;">
+	## <a href="#" class="m-image-link" style="width:100%;height:auto;outline:0;">
+		## Use imageSourceMobile field if present
+		#if( $mobileImage != "" )
+			<img style="outline:0;border:0;max-width:100%;margin:0;display:block;" class="nohide" src="$ROW.getChild('CONTENT').getChild('imageSourceMobile').getValue()" alt="">
+		#else
+			<img style="outline:0;border:0;max-width:100%;margin:0;display:block;" class="nohide" src="$ROW.getChild('CONTENT').getChild('imageSource').getValue()" alt="">
+		#end
+	## </a>
+	</p>
+	<div style="padding:34px 5%;">
+		#if( $ROW.getChild('CONTENT').getChild('headLine').getValue() != '' )
+		<p style="font-size:18px;font-weight:600;line-height:25px;padding-bottom:10px;">$ROW.getChild('CONTENT').getChild('headLine').getValue()</p>
+		#end
+
+		<p class="$bodyFont">
+			#if( $ROW.getChild('CONTENT').getChild('body').getValue() != '' )
+				$ROW.getChild('CONTENT').getChild('body').getValue()<br><br>
+			#end
+
+			#if( $ROW.getChild('CONTENT').getChild('buttonOrLink').getValue() == 'link' && $ROW.getChild('CONTENT').getChild('buttonOrLinkTitle').getValue() != '' )
+
+## Link source check
+#if( $ROW.getChild('CONTENT').getChild('buttonOrLinkSource').getValue() != '' )
+
+			<a class="aapl-link" href="$ROW.getChild('CONTENT').getChild('buttonOrLinkSource').getValue()" style="color:#0070C9;">
+				$ROW.getChild('CONTENT').getChild('buttonOrLinkTitle').getValue()<img class="nohide" src="$arrowImg" width="9" height="8" style="display:inline;margin:0" border="0" alt="">
+			</a>
+
+#end
+## End link source check
+
+			#elseif( $ROW.getChild('CONTENT').getChild('buttonOrLink').getValue() == 'button' )
+				<p class="$bodyFont">
+					<a href="$ROW.getChild('CONTENT').getChild('buttonOrLinkSource').getValue()"><img class="nohide" src="${ROW.getChild('CONTENT').getChild('buttonImageSource').getValue()}" width="${ROW.getChild('CONTENT').getChild('buttonImageWidth').getValue()}" height="${ROW.getChild('CONTENT').getChild('buttonImageHeight').getValue()}" style="display:block;margin:0" border="0" alt="$ROW.getChild('CONTENT').getChild('buttonOrLinkTitle').getValue()"></a>
+				</p>
+			#end
+		</p>
+	</div>
+</div>
+
+## End image_text/image_text-mobile.vm ###################
+
+## Begin 1 col layout icon_text-mobile ###################
+
+#elseif( $ROW.getChild('TYPE').getValue() == 'ICON_TEXT' )
+
+#set( $align_m = $ROW.getChild('CONTENT').getChild('alignment').getValue() )
+#set( $backgroundColor = $ROW.getChild('CONTENT').getChild('backgroundColor').getValue() )
+#set( $style = $ROW.getChild('CONTENT').getChild('style').getValue() )
+#set( $style1 = $ROW.getChild('CONTENT').getChild('style1').getValue() )
+
+### Alignment default left
+#if( $localeDirRTL == "true" )
+  #set( $alignText = 'right' )
+#else
+  #set( $alignText = 'left' )
+#end
+
+#### Set a backgroundColor else default to white
+#if( $backgroundColor == 'grey' || $backgroundColor == 'gray')
+  #set( $bgcolor-m = '#fafafa' )
+#elseif( $backgroundColor != '' && $backgroundColor != 'grey' || $backgroundColor != '' && $backgroundColor != 'gray' )
+	#set( $bgcolor-m = $backgroundColor )
+#else
+  #set( $bgcolor-m = '#ffffff' )
+#end
+
+### Set style / style1 to use classnames for font-size & line-height. Default is subhead.
+#if( $style == 'subhead' || $style == 'subhead-md' || $style == 'body-text' || $style == 'body-text-sm' )
+  #set( $headFont = $style + ' semibold' )
+#elseif( $style == '' && $style1 == 'subhead' || $style == '' && $style1 == 'subhead-md' || $style == '' && $style1 == 'body-text' || $style == '' && $style1 == 'body-text-sm' )
+  #set( $headFont = 'subhead semibold')
+#elseif( $style1 == 'subhead' || $style1 == 'subhead-md' || $style1 == 'body-text' || $style1 == 'body-text-sm' )
+  #set( $headFont = $style1 + ' semibold' )
+#else
+  #set( $headFont = 'subhead semibold')
+#end
+
+#if( $style1 == 'subhead' || $style1 == 'subhead-md' || $style1 == 'body-text' || $style1 == 'body-text-sm' )
+  #set( $bodyFont = $style1 )
+#elseif( $style == 'subhead' || $style == 'subhead-md' || $style == 'body-text' || $style == 'body-text-sm' )
+  #set( $bodyFont = $style )
+#else
+  #set( $bodyFont = 'subhead')
+#end
+
+<div dir="$localeDir" style="width:0;max-height:0;overflow:hidden;display:none;padding-bottom:0; background-color:$bgcolor-m;" class="m-container">
+	<div dir="$localeDir" style="padding:25px 5%; text-align:$alignText;">
+		#if( $ROW.getChild('CONTENT').getChild('imageSourceMobile').getValue() != '' )
+		<p style="padding:0 0 20px 0;">
+			<img class="nohide" src="$ROW.getChild('CONTENT').getChild('imageSourceMobile').getValue()" alt="" style="outline:0;border:0;max-width:100%;display:inline-block;">
+		</p>
+		#elseif( $ROW.getChild('CONTENT').getChild('imageSource').getValue() != '' )
+		<p style="padding:0 0 20px 0;">
+			<img class="nohide" src="$ROW.getChild('CONTENT').getChild('imageSource').getValue()" alt="" style="outline:0;border:0;max-width:100%;display:inline-block;">
+		</p>
+		#end
+
+		#if( $ROW.getChild('CONTENT').getChild('headLine').getValue() != '' )
+    <p class="$headFont" style="padding-bottom:5px;">
+      $ROW.getChild('CONTENT').getChild('headLine').getValue()
+    </p>
+		#end
+
+    #if( $ROW.getChild('CONTENT').getChild('body').getValue() != '' )
+    <p class="$bodyFont">$ROW.getChild('CONTENT').getChild('body').getValue()</p>
+		#end
+		#if( $ROW.getChild('CONTENT').getChild('buttonOrLink').getValue() == 'link' && $ROW.getChild('CONTENT').getChild('buttonOrLinkTitle').getValue() != '' )
+		## Link source check
+		#if( $ROW.getChild('CONTENT').getChild('buttonOrLinkSource').getValue() != '' )
+    <p class="$bodyFont" style="padding-top:15px;">
+			<a class="aapl-link $bodyFont" href="$ROW.getChild('CONTENT').getChild('buttonOrLinkSource').getValue()" style="color:#0070C9;">
+				$ROW.getChild('CONTENT').getChild('buttonOrLinkTitle').getValue()<img class="nohide" src="$arrowImg" width="9" height="8" style="display:inline;margin:0" border="0" alt="">
+			</a>
+    </p>
+		#end
+		## End link source check
+
+		#elseif( $ROW.getChild('CONTENT').getChild('buttonOrLink').getValue() == 'button' )
+				<p class="m-cta" style="padding-top:25px;">
+					<a href="$ROW.getChild('CONTENT').getChild('buttonOrLinkSource').getValue()"><img class="nohide" src="${ROW.getChild('CONTENT').getChild('buttonImageSource').getValue()}" width="${ROW.getChild('CONTENT').getChild('buttonImageWidth').getValue()}" height="${ROW.getChild('CONTENT').getChild('buttonImageHeight').getValue()}" style="display:inline-block;margin:0" border="0" alt="$ROW.getChild('CONTENT').getChild('buttonOrLinkTitle').getValue()"></a>
+				</p>
+			#end
+  </div>
+</div>
+
+## End 1 column layout icon_text-mobile ###################
+
+## Begin 2 column layout icon_text_2_column-mobile ###################
+
+#elseif( $ROW.getChild('TYPE').getValue() == 'ICON_TEXT_2_COLUMN' )
+
+###### Short Var
+#set( $align_m = $ROW.getChild('CONTENT').getChild('alignment').getValue() )
+#set( $backgroundColor = $ROW.getChild('CONTENT').getChild('backgroundColor').getValue() )
+#set( $style = $ROW.getChild('CONTENT').getChild('style').getValue() )
+#set( $style1 = $ROW.getChild('CONTENT').getChild('style1').getValue() )
+
+#### Set a backgroundColor else default to white
+#if( $backgroundColor == 'grey' || $backgroundColor == 'gray')
+  #set( $bgcolor-m = '#fafafa' )
+#elseif( $backgroundColor != '' && $backgroundColor != 'grey' || $backgroundColor != '' && $backgroundColor != 'gray' )
+	#set( $bgcolor-m = $backgroundColor )
+#else
+  #set( $bgcolor-m = '#ffffff' )
+#end
+
+## Alignment
+#if( $localeDirRTL == 'true' &&  $align_m == 'left' || $localeDirRTL == 'true' &&  $align_m == 'right' )
+  #set( $align2col = 'right' )
+#elseif(  $align_m != '' && $localeDirRTL == 'false' )
+  #set( $align2col =  $align_m )
+#else
+  #set( $align2col = 'center' )
+#end
+
+### Set style / style1 to add class with different font-size for headline, body, and buttonOrlink
+#if( $style == 'subhead' || $style == 'subhead-md' || $style == 'body-text-sm' )
+  #set( $headFont = $style + ' semibold' )
+  #set( $bodyFont = $style )
+#elseif( $style1 == 'subhead' || $style1 == 'subhead-md' || $style1 == 'body-text-sm' )
+  #set( $headFont = $style1 + ' semibold' )
+  #set( $bodyFont = $style1 )
+#elseif( $style == '' && $style1 == 'subhead' || $style == '' && $style1 == 'subhead-md' || $style == '' && $style1 == 'body-text' || $style == '' && $style1 == 'body-text-sm' )
+  #set( $headFont = 'header' )
+#else
+  #set( $headFont = 'header' )
+  #set( $bodyFont = 'body-text' )
+#end
+
+<div style="width:0;max-height:0;overflow:hidden;display:none;padding-bottom:0; background-color:$bgcolor-m" class="m-container">
+	## Left column, stacked first
+	<div style="padding:0 5% 34px; text-align:$align2col;">
+
+		#if( $ROW.getChild('CONTENT').getChild('imageSourceMobile').getValue() != '' )
+		<p style="padding:0 0 20px 0;">
+			<img class="nohide" src="$ROW.getChild('CONTENT').getChild('imageSourceMobile').getValue()" alt="" style="outline:0;border:0;max-width:100%;display:inline-block;">
+		</p>
+		#elseif( $ROW.getChild('CONTENT').getChild('imageSource').getValue() != '' )
+		<p style="padding:0 0 20px 0;">
+			<img class="nohide" src="$ROW.getChild('CONTENT').getChild('imageSource').getValue()" alt="" style="outline:0;border:0;max-width:100%;display:inline-block;">
+		</p>
+		#end
+
+		#if( $ROW.getChild('CONTENT').getChild('headLine').getValue() != '' )
+    <p class="$headFont" style="padding-bottom:5px;">
+      $ROW.getChild('CONTENT').getChild('headLine').getValue()
+    </p>
+		#end
+
+    #if( $ROW.getChild('CONTENT').getChild('body').getValue() != '' )
+    <p class="$bodyFont">$ROW.getChild('CONTENT').getChild('body').getValue()</p>
+		#end
+		#if( $ROW.getChild('CONTENT').getChild('buttonOrLink').getValue() == 'link' && $ROW.getChild('CONTENT').getChild('buttonOrLinkTitle').getValue() != '' )
+		## Link source check
+		#if( $ROW.getChild('CONTENT').getChild('buttonOrLinkSource').getValue() != '' )
+    <p class="$bodyFont" style="padding-top:10px;">
+			<a class="aapl-link $bodyFont" href="$ROW.getChild('CONTENT').getChild('buttonOrLinkSource').getValue()" style="color:#0070C9;">
+				$ROW.getChild('CONTENT').getChild('buttonOrLinkTitle').getValue()<img class="nohide" src="$arrowImg" width="9" height="8" style="display:inline;margin:0" border="0" alt="">
+			</a>
+    </p>
+		#end
+		## End link source check
+
+		#elseif( $ROW.getChild('CONTENT').getChild('buttonOrLink').getValue() == 'button' )
+				<p class="m-cta" style="padding-top:20px;">
+					<a href="$ROW.getChild('CONTENT').getChild('buttonOrLinkSource').getValue()"><img class="nohide" src="${ROW.getChild('CONTENT').getChild('buttonImageSource').getValue()}" width="${ROW.getChild('CONTENT').getChild('buttonImageWidth').getValue()}" height="${ROW.getChild('CONTENT').getChild('buttonImageHeight').getValue()}" style="display:inline-block;margin:0" border="0" alt="$ROW.getChild('CONTENT').getChild('buttonOrLinkTitle').getValue()"></a>
+				</p>
+			#end
+	</div>
+	## End left column, stacked first
+
+	## Right column, stacked second
+  #if( $ROW.getChild('CONTENT').getChild('headLine1').getValue() != '' || $ROW.getChild('CONTENT').getChild('body1').getValue() != '' )
+	<div style="padding:0 5% 34px; text-align:$align2col">
+
+		#if( $ROW.getChild('CONTENT').getChild('imageSourceMobile1').getValue() != '' )
+		<p style="padding:0 0 20px 0;">
+			<img class="nohide" src="$ROW.getChild('CONTENT').getChild('imageSourceMobile1').getValue()" alt="" style="outline:0;border:0;max-width:100%;display:inline-block;">
+		</p>
+		#elseif( $ROW.getChild('CONTENT').getChild('imageSource1').getValue() != '' )
+		<p style="padding:0 0 20px 0;">
+			<img class="nohide" src="$ROW.getChild('CONTENT').getChild('imageSource1').getValue()" alt="" style="outline:0;border:0;max-width:100%;display:inline-block;">
+		</p>
+		#end
+
+		#if( $ROW.getChild('CONTENT').getChild('headLine1').getValue() != '' )
+      <p class="$headFont" style="padding-bottom:5px;">$ROW.getChild('CONTENT').getChild('headLine1').getValue()</p>
+		#end
+
+    #if( $ROW.getChild('CONTENT').getChild('body1').getValue() != '' )
+    <p class="$bodyFont">$ROW.getChild('CONTENT').getChild('body1').getValue()</p>
+    #end
+		#if( $ROW.getChild('CONTENT').getChild('buttonOrLink1').getValue() == 'link' && $ROW.getChild('CONTENT').getChild('buttonOrLinkTitle1').getValue() != '' )
+
+    ## Link source check
+    #if( $ROW.getChild('CONTENT').getChild('buttonOrLinkSource1').getValue() != '' )
+    <p class="$bodyFont" style="padding-top:10px;">
+      <a class="aapl-link $bodyFont" href="$ROW.getChild('CONTENT').getChild('buttonOrLinkSource1').getValue()" style="color:#0070C9;">
+        $ROW.getChild('CONTENT').getChild('buttonOrLinkTitle1').getValue()<img class="nohide" src="$arrowImg" width="9" height="8" style="display:inline;margin:0" border="0" alt="">
+      </a>
+    </p>
+    #end
+    ## End link source check
+
+    #elseif( $ROW.getChild('CONTENT').getChild('buttonOrLink1').getValue() == 'button' )
+    <p class="m-cta" style="padding-top:20px;">
+      <a href="$ROW.getChild('CONTENT').getChild('buttonOrLinkSource1').getValue()"><img class="nohide" src="${ROW.getChild('CONTENT').getChild('buttonImageSource1').getValue()}" width="${ROW.getChild('CONTENT').getChild('buttonImageWidth1').getValue()}" height="${ROW.getChild('CONTENT').getChild('buttonImageHeight1').getValue()}" style="display:inline-block;margin:0" border="0" alt="$ROW.getChild('CONTENT').getChild('buttonOrLinkTitle1').getValue()"></a>
+    </p>
+    #end
+	</div>
+  #end
+	## End right column, stacked second
+
+</div>
+
+## End 2 column layout mobile ###################
+
+#elseif( $ROW.getChild('TYPE').getValue() == 'TEXT_TEXT' )
+
+## Begin text_text/text_text-mobile.vm ##################
+
+### style / styl1
+#set( $style = $ROW.getChild('CONTENT').getChild('style').getValue() )
+#set( $style1 = $ROW.getChild('CONTENT').getChild('style1').getValue() )
+
+### Set backgroundColor
+#if( $ROW.getChild('CONTENT').getChild('backgroundColor').getValue() != '' )
+  #set( $bgcolor-m = $ROW.getChild('CONTENT').getChild('backgroundColor').getValue() )
+#else
+	#set( $bgcolor-m = '#fafafa' )
+#end
+
+#### Set each column padding depending on background color. Else is any color besides white
+#if( $bgcolor-m.contains('fff') || $bgcolor-m == 'white' )
+	#set( $padBody = 'padding:15px 5% 25px;' )
+  #set( $padBody2 = 'padding:0px 5% 50px;' )
+#else
+	#set( $padBody = 'padding:40px 5% 25px;' )
+  #set( $padBody2 = 'padding:0px 5% 40px;' )
+#end
+
+### Set class font size
+#if( !$style.contains('px') && $style != '' )
+  #set( $headFont = $style + ' semibold' )
+#elseif( $style.contains('px') && $style1 != '' )
+  #set( $headFont = $style1 + ' semibold' )
+#elseif( $style.contains('px') && $style1 == '' || $style == '' && $style1 == '' || $style == '' )
+  #set( $headFont = 'header' )
+#else
+  #set( $headFont = 'header' )
+#end
+
+#if( !$style.contains('px') && $style1 == '' )
+  #set( $bodyFont = $style )
+#elseif( $style1 != '' )
+  #set( $bodyFont = $style1 )
+#elseif( $style.contains('px') && $style1 == '' || $style == '' && $style1 == '' || $style == '' )
+  #set( $bodyFont = 'body-text')
+#else
+  #set( $bodyFont = 'body-text')
+#end
+
+<div dir="$localeDir" style="width:0;max-height:0;overflow:hidden;display:none;padding:0 0 25px 0 !important;" class="m-container">
+	<div dir="$localeDir" style="background-color:$bgcolor-m;$padBody">
+	#if( $ROW.getChild('CONTENT').getChild('headLine').getValue() != '' )
+		<p class="$headFont" style="padding-bottom:10px;">$ROW.getChild('CONTENT').getChild('headLine').getValue()</p>
+	#end
+		<p class="$bodyFont">
+    #if( $ROW.getChild('CONTENT').getChild('body').getValue() != '' )
+      $ROW.getChild('CONTENT').getChild('body').getValue()
+    #end
+    #if( $ROW.getChild('CONTENT').getChild('buttonOrLink').getValue() == 'link' && $ROW.getChild('CONTENT').getChild('buttonOrLinkTitle').getValue() != '' )
+      #if( $ROW.getChild('CONTENT').getChild('buttonOrLinkSource').getValue() != '' )
+        <br><br>
+        <a class="aapl-link" href="$ROW.getChild('CONTENT').getChild('buttonOrLinkSource').getValue()" style="color:#0070C9;">
+          $ROW.getChild('CONTENT').getChild('buttonOrLinkTitle').getValue()<img class="nohide" src="$arrowImg" width="9" height="8" style="display:inline;margin:0" border="0" alt="">
+        </a>
+      #end
+			#elseif( $ROW.getChild('CONTENT').getChild('buttonOrLink').getValue() == 'button' )
+				#if( $ROW.getChild('CONTENT').getChild('buttonOrLinkSource').getValue() != '' )
+					<br><br>
+					<p class="m-cta">
+						<a href="$ROW.getChild('CONTENT').getChild('buttonOrLinkSource').getValue()"><img class="nohide" src="$ROW.getChild('CONTENT').getChild('buttonImageSource').getValue()" width="${ROW.getChild('CONTENT').getChild('buttonImageWidth').getValue()}" height="${ROW.getChild('CONTENT').getChild('buttonImageHeight').getValue()}" style="display:block;margin:0" border="0" alt="$ROW.getChild('CONTENT').getChild('buttonOrLinkTitle').getValue()"></a>
+					</p>
+				#end
+			#end
+		</p>
+	</div>
+
+	<div dir="$localeDir" style="background-color:$bgcolor-m;$padBody2">
+		#if( $ROW.getChild('CONTENT').getChild('headLine1').getValue() != '' )
+			<p class="$headFont" style="padding-bottom:10px">$ROW.getChild('CONTENT').getChild('headLine1').getValue()</p>
+		#end
+		<p class="$bodyFont">
+			#if( $ROW.getChild('CONTENT').getChild('body1').getValue() != '' )
+				$ROW.getChild('CONTENT').getChild('body1').getValue()
+			#end
+
+			#if( $ROW.getChild('CONTENT').getChild('buttonOrLink1').getValue() == 'link' && $ROW.getChild('CONTENT').getChild('buttonOrLinkTitle1').getValue() != '' )
+				#if( $ROW.getChild('CONTENT').getChild('buttonOrLinkSource1').getValue() != '' )
+					<br><br>
+					<a class="aapl-link" href="$ROW.getChild('CONTENT').getChild('buttonOrLinkSource1').getValue()" style="color:#0070C9;">
+						$ROW.getChild('CONTENT').getChild('buttonOrLinkTitle1').getValue()<img class="nohide" src="$arrowImg" width="9" height="8" style="display:inline;margin:0" border="0" alt="">
+					</a>
+				#end
+			#elseif( $ROW.getChild('CONTENT').getChild('buttonOrLink1').getValue() == 'button' )
+				#if( $ROW.getChild('CONTENT').getChild('buttonOrLinkSource1').getValue() != '' )
+					<br><br>
+					<p class="m-cta">
+						<a href="$ROW.getChild('CONTENT').getChild('buttonOrLinkSource1').getValue()"><img class="nohide" src="$ROW.getChild('CONTENT').getChild('buttonImageSource1').getValue()" width="${ROW.getChild('CONTENT').getChild('buttonImageWidth1').getValue()}" height="${ROW.getChild('CONTENT').getChild('buttonImageHeight1').getValue()}" style="display:block;margin:0" border="0" alt="$ROW.getChild('CONTENT').getChild('buttonOrLinkTitle1').getValue()"></a>
+					</p>
+				#end
+			#end
+		</p>
+	</div>
+</div>
+
+## End text_text/text_text-mobile.vm ###################
+
+
+## Begin section separator mobile ###################
+
+#elseif( $ROW.getChild('TYPE').getValue() == 'SECTION_BREAK' )
+
+#set( $sectionBreakHeight = "12px" )
+#if( $ROW.getChild('CONTENT').getChild('style').getValue() != "" )
+	#set( $sectionBreakHeight = $ROW.getChild('CONTENT').getChild('style').getValue() )
+#end
+<div style="margin:0;height:25px;border:none;width:0px;text-align:center;padding;0;">&nbsp;</div>
+<div style="width:0;max-height:0;overflow:hidden;display:none;" class="m-container-break">
+	<div class="aapl-mobile" style="height:$sectionBreakHeight; background-color:#f2f2f2;">
+	</div>
+</div>
+
+## End section separator mobile ###################
+
+		    #elseif( $ROW.getChild('TYPE').getValue() == 'SIGNOFF_TEXT' )
+
+## Begin signoff_text/signoff_text-mobile.vm ###################
+
+#set( $signoffTextMobileTopPad = '25px')
+
+#if( $localeDirRTL == 'true' )
+  #set( $align_m = 'right' )
+#else
+  #set( $align_m = 'left' )
+#end
+
+#set( $bgcolor2SignOff = $ROW.getChild('CONTENT').getChild('backgroundColor').getValue() )
+
+#if( $bgcolor2SignOff == "" )
+	#set( $bgcolor2SignOff = "#ffffff" )
+#end
+
+#if( $theme == 'AAW' )
+	#set( $signoffTextMobileColor = 'color:#666666;' )
+#else
+	#set( $signoffTextMobileColor = '' )
+#end
+
+<div dir="$localeDir" align="$align_m" style="width:0;max-height:0;overflow:hidden;display:none;padding-top:$signoffTextMobileTopPad;background-color:#ffffff;" class="m-container">
+	<div class="aapl-mobile">
+		<div class="m-body-gutter">
+			<div dir="$localeDir" class="m-row-copy" style="font-size:17px;line-height:26px;">
+				<p style="$signoffTextMobileColor">
+					#if( $ROW.getChild('CONTENT').getChild('signOffGreeting').getValue() != '' )
+						<span style="font-size: 17px;">$ROW.getChild('CONTENT').getChild('signOffGreeting').getValue()</span><br><br>
+					#end
+					<!-- <![endif]-->
+					#if( $ROW.getChild('CONTENT').getChild('signOffName').getValue() != '' )
+						$ROW.getChild('CONTENT').getChild('signOffName').getValue()<br>
+					#end
+					#if( $ROW.getChild('CONTENT').getChild('signOffSubName').getValue() != '' )
+						$ROW.getChild('CONTENT').getChild('signOffSubName').getValue()<br>
+					#end
+					#if( $ROW.getChild('CONTENT').getChild('signOffPhoneNumber').getValue() != '' )
+						 #if( $localeDirRTL == 'true' )<span dir="ltr">#end$ROW.getChild('CONTENT').getChild('signOffPhoneNumber').getValue()#if( $localeDirRTL == 'true' )</span>#end<br>
+					#end
+					#if( $ROW.getChild('CONTENT').getChild('signOffLinkTitle').getValue() != '' )
+						<a style="color:#0070C9;" class="aapl-link" href="$ROW.getChild('CONTENT').getChild('signOffLinkSource').getValue()">$ROW.getChild('CONTENT').getChild('signOffLinkTitle').getValue()</a>
+					#end
+				</p>
+			</div>
+		</div>
+	</div>
+</div>
+
+## End signoff_text/signoff_text-mobile.vm ###################
+## Begin footnote-mobile.vm ###################
+#elseif( $ROW.getChild('TYPE').getValue() == 'FOOTNOTE' )
+
+#set( $alignment = $ROW.getChild('CONTENT').getChild('alignment').getValue() )
+
+### set alignment to align text. Default is left.
+#if( $alignment == 'right' || $localeDirRTL ==  'true' )
+  #set( $alignText = 'right' )
+#elseif( $alignment != '' && $localeDirRTL ==  'false' )
+  #set( $alignText = $alignment )
+#else
+  #set( $alignText = 'left' )
+#end
+
+### footnote body padding
+#set( $bodyPad = '0 5% 10px')
+#set( $bodyPad2 = '0px 5% 20px')
+
+<div dir="$localeDir" style="width:0;max-height:0;overflow:hidden;display:none;padding-bottom: 0px !important;" class="m-container">
+	#if( $ROW.getChild('CONTENT').getChild('body').getValue() != '' )
+  <div style="padding:$bodyPad; text-align:$alignText;">
+    <p class="footnote">
+    #if( $ROW.getChild('CONTENT').getChild('headLine').getValue() != '' )<sup>$ROW.getChild('CONTENT').getChild('headLine').getValue()</sup>#end$ROW.getChild('CONTENT').getChild('body').getValue() #if( $ROW.getChild('CONTENT').getChild('buttonOrLinkTitle').getValue() != '' )<a href="$ROW.getChild('CONTENT').getChild('buttonOrLinkSource').getValue()">$ROW.getChild('CONTENT').getChild('buttonOrLinkTitle').getValue()</a>$localePunc#end
+    </p>
+  </div>
+  #end
+  #if( $ROW.getChild('CONTENT').getChild('body1').getValue() != '' )
+  <div dir="$localeDir" style="padding:$bodyPad2; text-align:$alignText;">
+    <p class="footnote">
+    #if( $ROW.getChild('CONTENT').getChild('headLine1').getValue() != '' )<sup>$ROW.getChild('CONTENT').getChild('headLine1').getValue()</sup>#end$ROW.getChild('CONTENT').getChild('body1').getValue() #if( $ROW.getChild('CONTENT').getChild('buttonOrLinkTitle1').getValue() != '' )<a href="$ROW.getChild('CONTENT').getChild('buttonOrLinkSource1').getValue()">$ROW.getChild('CONTENT').getChild('buttonOrLinkTitle1').getValue()</a>$localePunc#end
+    </p>
+  </div>
+  #end
+</div>
+
+## End footnote-mobile.vm ###################
+  #end
+  #set( $lastRowTypeM = $ROW.getChild('TYPE').getValue() )
+#end
+
+		</div> ## .m-container
+	</div> ## .aapl-mobile
+
+	## The response requires the footer to be in the ROWS
+	#foreach( $ROW in $ROWS )
+		#if( $ROW.getChild('TYPE').getValue() == 'FOOTER' )
+
+## Begin base/footer-mobile.vm ###################
+ #if(($locale.matches("th_TH")) || ($locale.matches("zh_CN")) || ($locale.matches("zh_MO")) || ($locale.matches("zh_HK")) || ($locale.matches("zh_TW")))
+   #set( $unsubSpace = "")
+ #else
+   #set( $unsubSpace = "&nbsp;")
+ #end
+
+<div dir="$localeDir" class="m-legal" style="width:0;max-height:0;overflow:hidden;display:none;">
+	<div dir="$localeDir" class="m-legal-wrapper" style="padding-top:14px;"><span class="aapl-footer-addr" style="color:#888888;">$ROW.getChild('CONTENT').getChild('copyrightText').getValue() $ROW.getChild('CONTENT').getChild('appleHQ').getValue()</span><br><br>
+		<span style="color:#d6d6d6;"><a href="$ROW.getChild('CONTENT').getChild('legalUrl').getValue()" class="aapl-link" style="color:#555555;">$ROW.getChild('CONTENT').getChild('legalText').getValue()</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp; <a href="$ROW.getChild('CONTENT').getChild('privacyPolicyUrl').getValue()" class="aapl-link" style="color:#555555;">$ROW.getChild('CONTENT').getChild('privacyPolicy').getValue()</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp; <a href="$ROW.getChild('CONTENT').getChild('appleIdUrl').getValue()" class="aapl-link" style="color:#555555;">$ROW.getChild('CONTENT').getChild('appleId').getValue()</a></span>
+		<br><br>
+		<div dir="$localeDir" class="aapl-footer-link" style="color:#888888;">
+			<span style="color:#888888;">
+      ## UnsubscribeMessage, UrlText, Url fields
+
+      #if( $ROW.getChild('CONTENT').getChild('unsubscribe').getChild('url').getValue() != '' &&  $ROW.getChild('CONTENT').getChild('unsubscribe').getChild('urlText').getValue() != '')
+         #if(($locale.matches("nl_BE")) || ($locale.matches("nl_NL")) || ($locale.matches("sv_SE")))
+          <a href="$ROW.getChild('CONTENT').getChild('unsubscribe').getChild('url').getValue()">$ROW.getChild('CONTENT').getChild('unsubscribe').getChild('urlText').getValue()</a> $ROW.getChild('CONTENT').getChild('unsubscribe').getChild('message').getValue()
+        </span>
+        #else
+          $ROW.getChild('CONTENT').getChild('unsubscribe').getChild('message').getValue()$unsubSpace<a href="$ROW.getChild('CONTENT').getChild('unsubscribe').getChild('url').getValue()">$ROW.getChild('CONTENT').getChild('unsubscribe').getChild('urlText').getValue()</a></span>$localeUnsub$localePunc
+        #end
+      #else
+        $ROW.getChild('CONTENT').getChild('unsubscribe').getChild('message').getValue()
+        </span>
+      #end
+		</div>
+	</div>
+</div>
+
+## End base/footer-mobile.vm ###################
+
+		#end
+	#end
+
+
+
+#* ********
+	DESKTOP
+******** *#
+
+## Hide logo if CSV value is nologo
+#foreach( $ROW in $ROWS )
+  #if( $ROW.getChild('TYPE').getValue() == 'LOGO' )
+    #set( $logo = $ROW.getChild('CONTENT').getChild('appleLogo').getValue() )
+    #set( $logoAlt = $ROW.getChild('CONTENT').getChild('logo').getValue() )
+    #set( $alignment = $ROW.getChild('CONTENT').getChild('alignment').getValue() )
+    #set( $imageActionUrl = $ROW.getChild('CONTENT').getChild('imageActionUrl').getValue() )
+    #set( $backgroundImage = $ROW.getChild('CONTENT').getChild('backgroundImageSource').getValue() )
+    #set( $image = $ROW.getChild('CONTENT').getChild('imageSource').getValue() )
+
+    #if( $ROW.getChild('CONTENT').getChild('backgroundColor').getValue() != '' )
+      #set( $backgroundColor = 'background-color:' + $ROW.getChild('CONTENT').getChild('backgroundColor').getValue() + ';' )
+    #else
+      #set( $backgroundColor = '' )
+    #end
+    ### Set alignment
+    ### RTL
+    #if( $localeDirRTL == "true" )
+      #set( $alignLogo = 'right' )
+    #elseif( $alignment != "" && $localeDirRTL == "false" )
+      #set( $alignLogo = $alignment )
+    #else
+      #set( $alignLogo = 'left' )
+    #end
+
+    #if( $alignment == 'center' || $backgroundImage != '' )
+      #set( $logoPadding = 'padding:20px 0 40px' )
+    #else
+      #set( $logoPadding = 'padding:20px 25px 40px 25px' )
+    #end
+
+    #### Set logo as any width or full-width 740 for NON apple logo
+    #if( $image != '' )
+      #set( $logoImg = $image )
+      #set( $logoWidth = $ROW.getChild('CONTENT').getChild('style').getValue() )
+      #set( $logoWidthpx = 'width:' + $ROW.getChild('CONTENT').getChild('style').getValue() + 'px')
+    #else
+      #set( $logoImg = $backgroundImage )
+      #set( $logoWidth = '740' )
+      #set( $logoWidthpx = 'width:740px')
+    #end
+
+    ## Set border radius if apple logo or other logos used. No logo has no top border radius
+    #if( $logo == 'nologo' &&  $logoImg == '')
+      #set( $td-outer-pad = '0 20px' )
+      #set( $rounded = 'border-bottom-left-radius:5px;border-bottom-right-radius:5px')
+      #set( $padTop = '' )
+    #else
+      #set( $td-outer-pad = '12px 20px 0' )
+      #set( $rounded = 'border-radius:5px')
+      #set( $padTop = 'padding-top:5px;')
+    #end
+
+  #end
+#end
+
+<table width="100%" border="0" cellspacing="0" cellpadding="0" align="center">
+	<tr>
+		<td bgcolor="#f2f2f2" class="aapl-desktop" style="padding:$td-outer-pad;" align="center">
+			<table width="740" cellspacing="0" cellpadding="0" border="0" align="center" style="width:740px;">
+				<tr>
+					<td align="center" valign="top" width="100%" style="background-color: #ffffff;vertical-align: top;$rounded;padding-bottom:35px;$padTop">
+						<table align="center" border="0" cellspacing="0" cellpadding="0" width="100%">
+            #if( $logo == 'nologo' && $logoImg == '' )
+              ## If nologo, leave blank
+            #else
+              ## Default to existing Apple logo for backwards compatibility
+              <tr>
+                <td dir="$localeDir" align="$alignLogo" style="$logoPadding;$backgroundColor">
+                    #if( $logo != '' && $logo.toString().contains("https"))
+                      <img src="$logo" width="21" height="26" style="display:block;margin:0;visibility:initial;" border="0" alt="">
+                      #elseif( $logo == 'nologo' && $logoImg != '' || $logo == '' && $logoImg != '')
+                      #if( $imageActionUrl != '' )<a href="$imageActionUrl">#end
+                      <img src="$logoImg" width="$logoWidth" style="display:block;margin:0;visibility:initial;$logoWidthpx;" border="0" alt="$logoAlt">
+                       #if( $imageActionUrl != '' )</a>#end
+                    #else
+                      ## displays default logo in bg apple_standard_ff
+                      <img src="$imageUrl/images/apple_standard_ff_2x.png" width="21" height="26" style="display:block;margin:0;visibility:initial;" border="0" alt="">
+                    #end
+                </td>
+              </tr>
+            #end
+				## End hide/show logo
+
+				#set( $lastRowType = '' )
+
+				#foreach( $ROW in $ROWS )
+					#set( $counter = $velocityCount )
+				#if( $ROW.getChild('TYPE').getValue() == 'BANNER' )
+
+## Begin banner/banner-desktop.vm ###################
+
+#set( $bannerImgStyle = "" )
+#set( $alignImg = $ROW.getChild('CONTENT').getChild('alignment').getValue() )
+
+#### Short var
+#set( $alignment = $ROW.getChild('CONTENT').getChild('alignment').getValue() )
+#set( $backgroundColor = $ROW.getChild('CONTENT').getChild('backgroundColor').getValue() )
+#set( $style = $ROW.getChild('CONTENT').getChild('style').getValue() )
+#set( $style1 = $ROW.getChild('CONTENT').getChild('style1').getValue() )
+
+## If alignment value is empty it defaults to center
+#if( $alignImg == "" )
+  #set( $alignImg = "center" )
+#end
+
+## Set rounded corners to headLine, subHeading td for tile when SECTION_BREAK is used
+#if( $style == 'round' || $style1 == 'round')
+  #set( $sectRound = 'border-radius:5px;' )
+#else
+  #set( $sectRound = '' )
+#end
+
+### Set alignment. If RTL sets to right alignment.
+#if( $localeDirRTL == 'true' && $alignment == 'left' || $localeDirRTL == 'true' && $alignment == 'right' )
+  #set( $alignTextBan = 'right' )
+#elseif( $alignment != '' && $localeDirRTL == 'false' )
+  #set( $alignTextBan = $alignment )
+#else
+  #set( $alignTextBan = 'center' )
+#end
+
+### Set backgroundColor as gray/grey or white, default is the set value
+#if( $backgroundColor == 'gray' || $backgroundColor == 'grey' || $style == 'gray-bg' )
+  #set( $bgcolorBanner = '#fafafa' )
+  #set( $headlinePad = '50px 130px 25px' )
+  #set( $buttonOrLinkPad = '0 0 50px 0' )
+  #if( $ROW.getChild('CONTENT').getChild('buttonOrLink').getValue() == '' )
+    #set( $subHeadPad = '0 90px 50px' )
+  #end
+#elseif( $backgroundColor != '' && $backgroundColor != 'gray' || $backgroundColor != '' && $backgroundColor != 'grey' )
+	#set( $bgcolorBanner = $backgroundColor )
+#else
+	#set( $bgcolorBanner = '#ffffff' )
+#end
+
+#if( $style == 'round' )
+  #set( $bgcolorBanner = '' )
+#end
+
+## Set style to use a class value in headline or subheading. Default class is headline and main-copy
+#if( $style == 'headline-reduce' )
+  #set( $classHeadline = 'headline-reduce' )
+#elseif( $style1 == 'headline-reduce' )
+  #set( $classHeadline = 'headline-reduce' )
+#else
+  #set( $classHeadline = 'headline' )
+#end
+
+#if( $style1 == 'subhead' || $style1 == 'subhead-md' )
+  #set( $className = $style1 )
+#else
+  #set( $className = 'main-copy' )
+#end
+
+#if( $theme == 'AAW' )
+	#set( $headFontWeight = 'font-weight:600;' )
+#else
+	#set( $headFontWeight = '' )
+#end
+
+#if( $theme == 'AAW' && $ROW.getChild('CONTENT').getChild('imageActionUrl').getValue() != '' )
+	#set( $bannerURL = $ROW.getChild('CONTENT').getChild('imageActionUrl').getValue() )
+#else
+	#set( $bannerURL = 'http://apple.com' )
+#end
+
+## Set up different spacing for left vs center alignment
+#if( $alignTextBan == 'right' )
+  #set( $headlinePad = '17px 50px 15px 220px' )
+  #set( $subHeadPad = '0 50px 25px 100px' )
+#elseif( $alignTextBan == 'left' )
+	#set( $headlinePad = '17px 220px 15px 50px' )
+	#set( $subHeadPad = '0 100px 25px 50px' )
+	#set( $buttonOrLinkPad = '0 0 59px 50px' )
+#else
+	#set( $headlinePad = '80px 130px 15px' )
+
+	#if( $theme == 'AAW' )
+    #if( $classHeadline != 'headline' )
+		  #set( $headlinePad = '25px 130px 15px' )
+    #else
+      #set( $headlinePad = '25px 130px' )
+    #end
+    #if( $ROW.getChild('CONTENT').getChild('buttonOrLink').getValue() == '' && $style1.contains('px') )
+      #set( $subHeadPad = '0 90px ' + $style1 )
+    #else
+		  #set( $subHeadPad = '0 90px 25px' )
+    #end
+	#else
+		#set( $headlinePad = '17px 130px 15px' )
+		#set( $subHeadPad = '0 170px 25px' )
+	#end
+#end
+
+#if( $theme == 'AAW' && $ROW.getChild('CONTENT').getChild('style').getValue() == 'stack-links')
+	#set( $buttonOrLinkPad = '0 0 20px 0' )
+#else
+### set style1 to custumize cta button's bottom padding
+  #if( $ROW.getChild('CONTENT').getChild('buttonOrLink').getValue() != '' && $style1.contains('px') )
+    #set( $buttonOrLinkPad = '0 50px ' + $style1 )
+  #else
+		#set( $buttonOrLinkPad = '0 50px 25px' )
+  #end
+#end
+
+<tr>
+    <td style="width:740px;background-color:$bgcolorBanner;$sectRound">
+      <table bgcolor="$bgcolorBanner" width="740" cellspacing="0" cellpadding="0" border="0" align="center" style="width:740px;$sectRound">
+
+      #if( $ROW.getChild('CONTENT').getChild('backgroundImageSource').getValue() != '' )
+
+	#set( $bannerImgStyle = $ROW.getChild('CONTENT').getChild('style').getValue() )
+
+	#if( $bannerImgStyle == "cropped" )
+	<tr>
+		<td align="$alignImg" style="padding:20px 0;">
+			<div class="hero-$counter">
+				<a href="$bannerURL" style="display:inline-block;outline:0;border:0;">
+				<img class="nohide" src="$ROW.getChild('CONTENT').getChild('backgroundImageSource').getValue()" style="display:inline-block;margin:0;padding:0;border:0;" border="0" alt="">
+				</a>
+			</div>
+		</td>
+	</tr>
+	#else
+	<tr>
+		<td>
+			<div class="hero-$counter">
+				<a href="$bannerURL" style="display:block;outline:0;border:0;">
+				<img class="nohide" src="$ROW.getChild('CONTENT').getChild('backgroundImageSource').getValue()" width="740" style="display:block;margin:0;padding:0;border:0;" border="0" alt="">
+				</a>
+			</div>
+		</td>
+	</tr>
+	#end
+#end
+
+      #if( $ROW.getChild('CONTENT').getChild('headLine').getValue() != '' )
+        <tr>
+          <td dir="$localeDir" align="$alignTextBan" style="padding:$headlinePad; width:740px;" width="740">
+            <h1 class="$classHeadline" style="border-style: none;text-align: $alignTextBan;">
+              $ROW.getChild('CONTENT').getChild('headLine').getValue()
+            </h1>
+          </td>
+        </tr>
+      #end
+      #if( $ROW.getChild('CONTENT').getChild('subHeading').getValue() != '')
+        <tr>
+          <td dir="$localeDir" class="$className" style="padding: $subHeadPad; width:740px;" align="$alignTextBan" class="msofix" width="740">
+            $ROW.getChild('CONTENT').getChild('subHeading').getValue()
+          </td>
+        </tr>
+      #end
+
+    #if( $ROW.getChild('CONTENT').getChild('buttonOrLink').getValue() != '' )
+      <tr>
+    	#if( $ROW.getChild('CONTENT').getChild('buttonOrLink').getValue() == 'link' && $ROW.getChild('CONTENT').getChild('buttonOrLinkTitle').getValue() != '' )
+      #if( $theme == 'AAW' )
+			  <td dir="$localeDir" class="$className" align="$alignTextBan" style="padding: $buttonOrLinkPad;">
+          <a class="aapl-link" href="$ROW.getChild('CONTENT').getChild('buttonOrLinkSource').getValue()" style="color:#0070C9;">
+            $ROW.getChild('CONTENT').getChild('buttonOrLinkTitle').getValue()<img class="nohide" src="$arrowImg" width="13" height="11" style="display:inline;margin:0" border="0" alt="">
+          </a>
+      #else
+      <td dir="$localeDir" class="main-copy" align="$alignTextBan" style="padding: $buttonOrLinkPad;">
+        <a class="aapl-link" href="$ROW.getChild('CONTENT').getChild('buttonOrLinkSource').getValue()" style="color:#0070C9;">
+        $ROW.getChild('CONTENT').getChild('buttonOrLinkTitle').getValue()<img class="nohide" src="$arrowImg" width="13" height="11" style="display:inline;margin:0" border="0" alt="">
+        </a>
+      #end
+      #elseif( $ROW.getChild('CONTENT').getChild('buttonOrLink').getValue() == 'button' )
+      <td dir="$localeDir" align="$alignTextBan" style="padding: $buttonOrLinkPad;">
+        <div class="cta" style="width:${ROW.getChild('CONTENT').getChild('buttonImageWidth').getValue()}px;height:${ROW.getChild('CONTENT').getChild('buttonImageHeight').getValue()}px">
+          <a href="$ROW.getChild('CONTENT').getChild('buttonOrLinkSource').getValue()" style="display:inline-block; width:${ROW.getChild('CONTENT').getChild('buttonImageWidth').getValue()}px;height:${ROW.getChild('CONTENT').getChild('buttonImageHeight').getValue()}px">
+            <img class="nohide" src="$ROW.getChild('CONTENT').getChild('buttonImageSource').getValue()" width="${ROW.getChild('CONTENT').getChild('buttonImageWidth').getValue()}" height="${ROW.getChild('CONTENT').getChild('buttonImageHeight').getValue()}" style="display:block;margin:0;" border="0" alt="${ROW.getChild('CONTENT').getChild('buttonOrLinkTitle').getValue()}">
+          </a>
+        </div>
+      #end
+
+        </td>
+      </tr>
+
+    #end
+
+</table>
+</td>
+</tr>
+
+
+## End banner/banner-desktop.vm ###################
+
+## Begin 1 col layout desktop icon_text-desktop ###################
+
+#elseif( $ROW.getChild('TYPE').getValue() == 'ICON_TEXT' )
+
+#set( $alignment = $ROW.getChild('CONTENT').getChild('alignment').getValue() )
+#set( $backgroundColor = $ROW.getChild('CONTENT').getChild('backgroundColor').getValue() )
+#set( $style = $ROW.getChild('CONTENT').getChild('style').getValue() )
+#set( $style1 = $ROW.getChild('CONTENT').getChild('style1').getValue() )
+
+##### Set Alignment with default is center
+#if( $localeDirRTL == 'true' && $alignment == 'left' || $localeDirRTL == 'true' && $alignment == 'right' )
+  #set( $alignText = 'right' )
+#elseif( $alignment != '' && $localeDirRTL == 'false' )
+  #set( $alignText = $alignment )
+#else
+  #set( $alignText = 'center' )
+#end
+
+#### Icon or imageSource Padding
+#set( $imagePad = '0 50px 25px')
+
+#### Alignment right padding
+#if( $alignText == 'right' )
+  #### headline padding
+  #if( $ROW.getChild('CONTENT').getChild('body').getValue() == '' && $ROW.getChild('CONTENT').getChild('imageSource').getValue() == '' )
+    #set( $headlinePad = '0 50px 35px 100px' )
+  #else
+    #set( $headlinePad = '0 50px 7px 100px' )
+  #end
+  #### Body padding
+  #if( $ROW.getChild('CONTENT').getChild('buttonOrLink').getValue() == 'link'  )
+    #set( $bodyPad = '0 50px 10px 100px' )
+  #elseif( $ROW.getChild('CONTENT').getChild('headLine').getValue() == '' && $ROW.getChild('CONTENT').getChild('imageSource').getValue() == '' )
+    #if( $ROW.getChild('CONTENT').getChild('buttonOrLink').getValue() == '' && $style1.contains('px') )
+      #set( $bodyPad = $style1 + ' 50px 20px 100px' )
+    #else
+      #set( $bodyPad = '15px 50px 20px 100px' )
+    #end
+  #elseif( $ROW.getChild('CONTENT').getChild('buttonOrLink').getValue() == '' )
+    #set( $bodyPad = '0 50px 20px 100px' )
+  #else
+    #set( $bodyPad = '0 50px 20px 100px' )
+  #end
+
+#### Alignment left padding
+#elseif( $alignText == 'left')
+  #### headline padding
+  #if( $ROW.getChild('CONTENT').getChild('body').getValue() == '' && $ROW.getChild('CONTENT').getChild('imageSource').getValue() == '' )
+    #set( $headlinePad = '0 100px 35px 50px' )
+  #else
+	  #set( $headlinePad = '0 100px 7px 50px' )
+  #end
+  #### Body padding
+  #if( $ROW.getChild('CONTENT').getChild('buttonOrLink').getValue() == 'link'  )
+    #set( $bodyPad = '0 100px 10px 50px' )
+  #elseif( $ROW.getChild('CONTENT').getChild('headLine').getValue() == '' && $ROW.getChild('CONTENT').getChild('imageSource').getValue() == '' )
+    #if( $ROW.getChild('CONTENT').getChild('buttonOrLink').getValue() == '' && $style1.contains('px') )
+      #set( $bodyPad = $style1 + ' 100px 25px 50px' )
+    #else
+      #set( $bodyPad = '15px 100px 25px 50px' )
+    #end
+  #elseif( $ROW.getChild('CONTENT').getChild('buttonOrLink').getValue() == '' )
+    #set( $bodyPad = '0 100px 25px 50px' )
+  #else
+	  #set( $bodyPad = '0 100px 25px 50px' )
+  #end
+
+###### Alignment center padding
+#else
+
+  #### headline padding
+  #if( $ROW.getChild('CONTENT').getChild('body').getValue() == '' && $ROW.getChild('CONTENT').getChild('imageSource').getValue() == '' )
+    #set( $headlinePad = '0 90px 35px' )
+  #else
+    #set( $headlinePad = '0 90px 7px' )
+  #end
+  #### Body padding
+  #if( $ROW.getChild('CONTENT').getChild('buttonOrLink').getValue() == 'link'  )
+		#set( $bodyPad = '0 90px 10px' )
+  #elseif( $ROW.getChild('CONTENT').getChild('headLine').getValue() == '' && $ROW.getChild('CONTENT').getChild('imageSource').getValue() == '' )
+    #if( $ROW.getChild('CONTENT').getChild('buttonOrLink').getValue() == '' && $style1.contains('px') )
+      #set( $bodyPad = $style1 + ' 90px 35px' )
+    #else
+      #set( $bodyPad = '15px 90px 25px' )
+    #end
+  #elseif( $ROW.getChild('CONTENT').getChild('buttonOrLink').getValue() == '' )
+   #set( $bodyPad = '0 90px 35px' )
+  #else
+		#set( $bodyPad = '0 90px 25px' )
+	#end
+#end
+#### End Alignment padding
+
+####### CTA padding
+#if( $theme == 'AAW' && $ROW.getChild('CONTENT').getChild('style').getValue() == 'stack-links')
+  #set( $ctaPad = '0 50px 20px' )
+#else
+### set style1 to custumize cta button's bottom padding
+  #if( $ROW.getChild('CONTENT').getChild('buttonOrLink').getValue() != '' && $style1.contains('px') )
+    #set( $ctaPad = '0 50px ' + $style1 + ' 50px' )
+  #else
+    #set( $ctaPad = '0 50px 25px' )
+  #end
+#end
+
+### set backgroundColor. Default is none.
+#if( $backgroundColor == 'grey' || $backgroundColor == 'gray')
+  #set( $bgcolorRow = 'background-color:#fafafa;' )
+#elseif( $backgroundColor != '' && $backgroundColor != 'grey' || $backgroundColor != '' && $backgroundColor != 'gray' )
+  #set( $bgcolorRow = 'background-color:' + $backgroundColor + ';' )
+#else
+  #set( $bgcolorRow = '' )
+#end
+
+### Set style / style1 to use classnames for font-size & line-height. Default is subhead.
+#if( $style == 'subhead' || $style == 'subhead-md' || $style == 'body-text' || $style == 'body-text-sm' )
+  #set( $headFont = $style + ' semibold' )
+#elseif( $style == '' && $style1 == 'subhead' || $style == '' && $style1 == 'subhead-md' || $style == '' && $style1 == 'body-text' || $style == '' && $style1 == 'body-text-sm' )
+  #set( $headFont = 'subhead semibold')
+#elseif( $style1 == 'subhead' || $style1 == 'subhead-md' || $style1 == 'body-text' || $style1 == 'body-text-sm' )
+  #set( $headFont = $style1 + ' semibold' )
+#else
+  #set( $headFont = 'subhead semibold')
+#end
+
+#if( $style1 == 'subhead' || $style1 == 'subhead-md' || $style1 == 'body-text' || $style1 == 'body-text-sm' )
+  #set( $bodyFont = $style1 )
+#elseif( $style == 'subhead' || $style == 'subhead-md' || $style == 'body-text' || $style == 'body-text-sm' )
+  #set( $bodyFont = $style )
+#else
+  #set( $bodyFont = 'subhead')
+#end
+
+#if( $style == 'round' || $style1 == 'round' )
+<tr>
+    <td width="740" height="25" style="height:25px;width:740px;line-height;25px;$bgcolorRow">&nbsp;</td>
+</tr>
+#end
+
+#if( $ROW.getChild('CONTENT').getChild('imageSource').getValue() != '' )
+<tr>
+  <td dir="$localeDir" width="740" valign="top" align="$alignText" style="padding:$imagePad;width:740px;$bgcolorRow">
+	  <img class="nohide" src="$ROW.getChild('CONTENT').getChild('imageSource').getValue()" alt="">
+  </td>
+</tr>
+#end
+
+#if( $ROW.getChild('CONTENT').getChild('headLine').getValue() != '' )
+<tr>
+  <td dir="$localeDir" class="$headFont" width="740" valign="top" align="$alignText" style="padding:$headlinePad;width:740px;$bgcolorRow">$ROW.getChild('CONTENT').getChild('headLine').getValue()</td>
+</tr>
+#end
+
+#if( $ROW.getChild('CONTENT').getChild('body').getValue() != '' )
+<tr>
+  <td dir="$localeDir" class="$bodyFont" width="740" valign="top" align="$alignText" style="padding:$bodyPad;width:740px;$bgcolorRow">$ROW.getChild('CONTENT').getChild('body').getValue()</td>
+</tr>
+#end
+## Link source check
+#if( $ROW.getChild('CONTENT').getChild('buttonOrLink').getValue() != '' )
+<tr>
+  <td dir="$localeDir" class="$bodyFont" align="$alignText" style="padding:$ctaPad;$bgcolorRow">
+    #if( $ROW.getChild('CONTENT').getChild('buttonOrLink').getValue() == 'link' && $ROW.getChild('CONTENT').getChild('buttonOrLinkTitle').getValue() != '' )
+	  <a class="aapl-link $bodyFont" href="$ROW.getChild('CONTENT').getChild('buttonOrLinkSource').getValue()" style="color:#0070C9;">
+		  $ROW.getChild('CONTENT').getChild('buttonOrLinkTitle').getValue()<img class="nohide" src="$arrowImg" width="13" height="11" style="display:inline;margin:0" border="0" alt="">
+    </a>
+    #elseif( $ROW.getChild('CONTENT').getChild('buttonOrLink').getValue() == 'button' )
+    <div class="cta" style="width:${ROW.getChild('CONTENT').getChild('buttonImageWidth').getValue()}px;height:${ROW.getChild('CONTENT').getChild('buttonImageHeight').getValue()}px">
+     <a href="$ROW.getChild('CONTENT').getChild('buttonOrLinkSource').getValue()" style="display:inline-block; width:${ROW.getChild('CONTENT').getChild('buttonImageWidth').getValue()}px;height:${ROW.getChild('CONTENT').getChild('buttonImageHeight').getValue()}px">
+	    <img class="nohide" src="$ROW.getChild('CONTENT').getChild('buttonImageSource').getValue()" width="${ROW.getChild('CONTENT').getChild('buttonImageWidth').getValue()}" height="${ROW.getChild('CONTENT').getChild('buttonImageHeight').getValue()}" style="display:block;margin:0;" border="0" alt="${ROW.getChild('CONTENT').getChild('buttonOrLinkTitle').getValue()}">
+		  </a>
+	  </div>
+    #end
+  </td>
+</tr>
+#end
+
+## End icon_text-desktop.vm ###################
+
+## Begin 2 col layout icon_text_2_column-desktop ###################
+
+#elseif( $ROW.getChild('TYPE').getValue() == 'ICON_TEXT_2_COLUMN' )
+
+##### Short Var
+#set( $backgroundColor = $ROW.getChild('CONTENT').getChild('backgroundColor').getValue() )
+#set( $style = $ROW.getChild('CONTENT').getChild('style').getValue() )
+#set( $style1 = $ROW.getChild('CONTENT').getChild('style1').getValue() )
+#set( $alignment = $ROW.getChild('CONTENT').getChild('alignment').getValue() )
+
+### set alignment and column padding
+#if( $localeDirRTL == 'true' && $alignment == 'left' || $localeDirRTL == 'true' && $alignment == 'right' )
+  #set( $align2col = "right" )
+#elseif( $alignment != '' && $localeDirRTL == 'false' )
+  #set( $align2col = $alignment )
+#else
+  #set( $align2col = 'center' )
+#end
+
+#if( $align2col == 'right' )
+  #set( $colPadLeft = '10px 40px 30px 0' )
+  #set( $colPadRight = '10px 0 30px 40px' )
+  #set( $colspacer = '40' )
+#elseif( $align2col == 'left' )
+  #set( $colPadLeft = '10px 10px 30px 40px' )
+  #set( $colPadRight = '10px 40px 30px 10px' )
+#else
+  #set( $colPadLeft = '10px 25px 30px' )
+  #set( $colPadRight = '10px 25px 30px' )
+  #set( $colspacer = '20' )
+#end
+
+#### Set a backgroundColor else default to white
+#if( $backgroundColor == 'grey' || $backgroundColor == 'gray')
+  #set( $bgcolor2col = '#fafafa')
+#elseif( $backgroundColor != '' && $backgroundColor != 'grey' || $backgroundColor != '' && $backgroundColor != 'gray' )
+	#set( $bgcolor2col = $backgroundColor )
+#else
+	#set( $bgcolor2col = '#ffffff' )
+#end
+
+### Set style / style1 to add class with different font-size for headline, body, and buttonOrlink
+#if( $style == 'subhead' || $style == 'subhead-md' || $style == 'body-text-sm' )
+  #set( $headFont = $style + ' semibold' )
+  #set( $bodyFont = $style )
+#elseif( $style1 == 'subhead' || $style1 == 'subhead-md' || $style1 == 'body-text-sm' )
+  #set( $headFont = $style1 + ' semibold' )
+  #set( $bodyFont = $style1 )
+#elseif( $style == '' && $style1 == 'subhead' || $style == '' && $style1 == 'subhead-md' || $style == '' && $style1 == 'body-text' || $style == '' && $style1 == 'body-text-sm' )
+  #set( $headFont = 'header' )
+#else
+  #set( $headFont = 'header' )
+  #set( $bodyFont = 'body-text' )
+#end
+
+## Set rounded corners to headLine, subHeading td for tile when SECTION_BREAK is used
+#if( $ROW.getChild('CONTENT').getChild('style').getValue() == 'round' || $ROW.getChild('CONTENT').getChild('style1').getValue() == 'round' )
+  #set( $sectRound = 'border-radius:5px;')
+#else
+  #set( $sectRound = '' )
+#end
+
+<tr>
+	<td dir="$localeDir" width="740" style="background-color:$bgcolor2col;">
+		<table cellpadding="0" cellspacing="0" width="740">
+			<tr>
+				## Left column
+				<td dir="$localeDir" width="310" valign="top" align="$align2col" style="padding:$colPadLeft;">
+					<table width="310" cellpadding="0" cellspacing="0">
+						#if( $ROW.getChild('CONTENT').getChild('imageSource').getValue() != '' )
+							<tr>
+								<td width="310" valign="top" align="$align2col" style="padding:0 0 20px 0;">
+									<img class="nohide" src="$ROW.getChild('CONTENT').getChild('imageSource').getValue()" alt="">
+								</td>
+							</tr>
+						  #end
+
+						#if( $ROW.getChild('CONTENT').getChild('headLine').getValue() != '' )
+							<tr>
+								<td width="310" valign="top" align="$align2col" style="padding:0 0 7px 0;">
+		              <p class="$headFont">$ROW.getChild('CONTENT').getChild('headLine').getValue()</p>
+								</td>
+							</tr>
+						#end
+
+						#if( $ROW.getChild('CONTENT').getChild('body').getValue() != '' )
+							<tr>
+								<td width="310" valign="top" align="$align2col" style="padding:0 0 10px 0;">
+									<p class="$bodyFont">$ROW.getChild('CONTENT').getChild('body').getValue()</p>
+								</td>
+							</tr>
+						#end
+
+						#if( $ROW.getChild('CONTENT').getChild('buttonOrLink').getValue() == 'link' && $ROW.getChild('CONTENT').getChild('buttonOrLinkTitle').getValue() != '' )
+
+						## Link source check
+						#if( $ROW.getChild('CONTENT').getChild('buttonOrLinkSource').getValue() != '' )
+							<tr>
+								<td class="$bodyFont" width="310" valign="top" align="$align2col" style="padding:0;">
+									<a class="aapl-link $bodyFont" href="$ROW.getChild('CONTENT').getChild('buttonOrLinkSource').getValue()" style="color:#0070C9;">
+										$ROW.getChild('CONTENT').getChild('buttonOrLinkTitle').getValue()<img class="nohide" src="$arrowImg" width="9" height="8" style="display:inline;margin:0;" border="0" alt="">
+									</a>
+								</td>
+							</tr>
+						#end
+						## End link source check
+
+						#elseif( $ROW.getChild('CONTENT').getChild('buttonOrLink').getValue() == 'button' )
+							<tr>
+								<td width="310" valign="top" align="$align2col" style="padding:10px 0 0 0;">
+									<a href="$ROW.getChild('CONTENT').getChild('buttonOrLinkSource').getValue()" style="display:inline-block; width:${ROW.getChild('CONTENT').getChild('buttonImageWidth').getValue()}px;height:${ROW.getChild('CONTENT').getChild('buttonImageHeight').getValue()}px">
+										<img class="nohide" src="$ROW.getChild('CONTENT').getChild('buttonImageSource').getValue()" width="${ROW.getChild('CONTENT').getChild('buttonImageWidth').getValue()}" height="${ROW.getChild('CONTENT').getChild('buttonImageHeight').getValue()}" style="display:block;margin:0;" border="0" alt="${ROW.getChild('CONTENT').getChild('buttonOrLinkTitle').getValue()}">
+									</a>
+								</td>
+							</tr>
+						#end
+					</table>
+				</td>
+				## End left column
+
+				<td width="$colspacer"></td>
+
+				## Right column
+				<td dir="$localeDir" width="310" valign="top" align="$align2col" style="padding:$colPadRight;">
+					<table width="310" cellpadding="0" cellspacing="0">
+						#if( $ROW.getChild('CONTENT').getChild('imageSource1').getValue() != '' )
+						<tr>
+							<td width="310" valign="top" align="$align2col" style="padding:0 0 20px 0;">
+								<img class="nohide" src="$ROW.getChild('CONTENT').getChild('imageSource1').getValue()" alt="">
+							</td>
+						</tr>
+						#end
+						#if( $ROW.getChild('CONTENT').getChild('headLine1').getValue() != '' )
+						<tr>
+							<td width="310" valign="top" align="$align2col" style="padding:0 0 7px 0;">
+                <p class="$headFont">$ROW.getChild('CONTENT').getChild('headLine1').getValue()</p>
+              </td>
+						</tr>
+						#end
+						#if( $ROW.getChild('CONTENT').getChild('body1').getValue() != '' )
+						<tr>
+							<td width="310" valign="top" align="$align2col" style="padding:0 0 10px 0;">
+                <p class="$bodyFont">$ROW.getChild('CONTENT').getChild('body1').getValue()</p>
+							</td>
+						</tr>
+						#end
+
+						#if( $ROW.getChild('CONTENT').getChild('buttonOrLink1').getValue() == 'link' && $ROW.getChild('CONTENT').getChild('buttonOrLinkTitle1').getValue() != '' )
+
+						## Link source check
+						#if( $ROW.getChild('CONTENT').getChild('buttonOrLinkSource1').getValue() != '' )
+						<tr>
+              <td class="$bodyFont" width="310" valign="top" align="$align2col" style="padding:0;">
+								<a class="aapl-link $bodyFont" href="$ROW.getChild('CONTENT').getChild('buttonOrLinkSource1').getValue()" style="color:#0070C9;">
+									$ROW.getChild('CONTENT').getChild('buttonOrLinkTitle1').getValue()<img class="nohide" src="$arrowImg" width="9" height="8" style="display:inline;margin:0;" border="0" alt="">
+								</a>
+							</td>
+						</tr>
+						#end
+						## End link source check
+
+						#elseif( $ROW.getChild('CONTENT').getChild('buttonOrLink1').getValue() == 'button' )
+						<tr>
+							<td width="310" valign="top" align="$align2col" style="padding:10px 0 0;">
+								<a href="$ROW.getChild('CONTENT').getChild('buttonOrLinkSource1').getValue()" style="display:inline-block; width:${ROW.getChild('CONTENT').getChild('buttonImageWidth1').getValue()}px;height:${ROW.getChild('CONTENT').getChild('buttonImageHeight1').getValue()}px">
+									<img class="nohide" src="$ROW.getChild('CONTENT').getChild('buttonImageSource1').getValue()" width="${ROW.getChild('CONTENT').getChild('buttonImageWidth1').getValue()}" height="${ROW.getChild('CONTENT').getChild('buttonImageHeight1').getValue()}" style="display:block;margin:0;" border="0" alt="${ROW.getChild('CONTENT').getChild('buttonOrLinkTitle1').getValue()}">
+								</a>
+							</td>
+						</tr>
+						#end
+					</table>
+				</td>
+				## End right column
+			</tr>
+		</table>
+	</td>
+</tr>
+
+## End 2 col layout desktop ###################
+
+#elseif( $ROW.getChild('TYPE').getValue() == 'TEXT_IMAGE' )
+
+## Begin text_image/text_image-desktop.vm ###################
+
+#set( $tiLineHeight = "" )
+#set( $tiLineHeight = 'line-height:19px;font-size:14px;' )
+#set( $style = $ROW.getChild('CONTENT').getChild('style').getValue() )
+#set( $style1 = $ROW.getChild('CONTENT').getChild('style1').getValue() )
+#set( $backgroundColor = $ROW.getChild('CONTENT').getChild('backgroundColor').getValue() )
+
+#if( $style == 'round' || $style1 == 'round' )
+  #set( $sectRound = 'border-radius:5px;')
+  #set( $sectRoundRight = 'border-top-right-radius:5px;border-bottom-right-radius:5px;')
+  #set( $border = '' )
+  #set( $bgcolorRow = '' )
+#else
+  #set( $border = 'border:0;' )
+  #set( $sectRound = '' )
+  #set( $sectRoundRight = '' )
+#end
+
+#### Non AAW theme & Parent outer table - set background color row
+#if( $backgroundColor != '' && $style != 'round' )
+  #set( $bgcolorRow = 'background-color:' + $backgroundColor + ';' )
+#elseif( $style == 'round' )
+  #set( $bgcolorRow = '' )
+#else
+  #set( $bgcolorRow = 'background-color:#ffffff;' )
+#end
+
+### Set backgroundColor for column td image
+#if( $backgroundColor == 'gray' || $backgroundColor == 'grey' )
+  #set( $bgcolorCol = 'background-color:#fafafa;')
+  #set( $bgColorRow = 'background-color:#fafafa;')
+#elseif( $backgroundColor != '' )
+  #set( $bgcolorCol = 'background-color:' + $backgroundColor + ';' )
+#else
+  #set( $bgcolorCol = 'background-color:#ffffff;' )
+#end
+
+#if( $style == 'body-text-sm' || $style1 == 'body-text-sm' )
+	#set( $bodyFont = 'body-text-sm' )
+#else
+	#set( $bodyFont = 'body-text' )
+#end
+
+### Headline, body, & cta padding
+
+#if( $localeDirRTL == "true" )
+  #set( $localeDirLeft = 'dir="ltr"' )
+  #set( $txtPadAAW = '0 30px 0 15px' )
+  #set( $txtPad = '0 30px 0 40px' )
+#else
+  #set( $localeDirLeft = '' )
+  #set( $txtPadAAW = '0 15px 0 30px' )
+  #set( $txtPad = '0 60px 0 40px' )
+#end
+
+<tr>
+	<td $localeDirLeft align="center" width="740" style="width:740px;">
+		<table align="center" cellpadding="0" cellspacing="0" width="740" style="width:740px;">
+			<tr>
+      #if( $theme == 'AAW' )
+				<td dir="$localeDir" valign="middle" style="padding:$txtPadAAW;vertical-align:middle;">
+       #else
+        <td dir="$localeDir" valign="middle" style="padding:$txtPad;vertical-align:middle;$bgcolorRow">
+       #end
+					<table cellpadding="0" cellspacing="0">
+						#if( $ROW.getChild('CONTENT').getChild('headLine').getValue() != '' )
+						<tr>
+							<td style="padding:5px 0 8px 0">
+								<p style="font-size:18px;font-weight:600;line-height:25px;">$ROW.getChild('CONTENT').getChild('headLine').getValue()</p>
+							</td>
+						</tr>
+						#end
+						#if( $ROW.getChild('CONTENT').getChild('body').getValue() != '' )
+						<tr>
+							<td style="padding-bottom:10px;">
+								<p class="$bodyFont">$ROW.getChild('CONTENT').getChild('body').getValue()</p>
+							</td>
+						</tr>
+						#end
+						#if( $ROW.getChild('CONTENT').getChild('buttonOrLink').getValue() == 'link' && $ROW.getChild('CONTENT').getChild('buttonOrLinkTitle').getValue() != '' )
+						<tr>
+							<td style="padding-bottom:12px;">
+								<p class="$bodyFont">
+									## Link source check
+									#if( $ROW.getChild('CONTENT').getChild('buttonOrLinkSource').getValue() != '' )
+									<a class="aapl-link" href="$ROW.getChild('CONTENT').getChild('buttonOrLinkSource').getValue()" style="color:#0070C9;">
+										$ROW.getChild('CONTENT').getChild('buttonOrLinkTitle').getValue()<img class="nohide" src="$arrowImg" width="9" height="8" style="display:inline;margin:0;" border="0" alt="">
+									</a>
+									#end
+									## End link source check
+									#elseif( $ROW.getChild('CONTENT').getChild('buttonOrLink').getValue() == 'button' )
+									<div class="cta" style="width:${ROW.getChild('CONTENT').getChild('buttonImageWidth').getValue()}px;height:${ROW.getChild('CONTENT').getChild('buttonImageHeight').getValue()}px">
+										<a href="$ROW.getChild('CONTENT').getChild('buttonOrLinkSource').getValue()" style="display:inline-block; width:${ROW.getChild('CONTENT').getChild('buttonImageWidth').getValue()}px;height:${ROW.getChild('CONTENT').getChild('buttonImageHeight').getValue()}px">
+											<img src="$ROW.getChild('CONTENT').getChild('buttonImageSource').getValue()" width="${ROW.getChild('CONTENT').getChild('buttonImageWidth').getValue()}" height="${ROW.getChild('CONTENT').getChild('buttonImageHeight').getValue()}" style="display:block;margin:0;" border="0" alt="${ROW.getChild('CONTENT').getChild('buttonOrLinkTitle').getValue()}">
+										</a>
+									</div>
+								</p>
+							</td>
+						</tr>
+						#end
+					</table>
+				</td>
+        #if( $theme == 'AAW' )
+				<td width="450" style="width:450px;min-width:450px;$sectRoundRight$bgcolorCol">
+					<img class="nohide" src="$ROW.getChild('CONTENT').getChild('imageSource').getValue()" alt="" width="450" style="display: block;outline:0;$border$sectRoundRight">
+				</td>
+				#else
+				<td width="370" style="width:370px;min-width:370px;background-color:#F2F2F2;$sectRoundRight">
+					<a href="${text.powerful_solutions_link_text_url}" style="display:block;outline:0;border:0;">
+						<img class="nohide" src="$ROW.getChild('CONTENT').getChild('imageSource').getValue()" alt="" width="370" style="display: block;outline:0;$border$sectRoundRight">
+					</a>
+				</td>
+				#end
+			</tr>
+		</table>
+	</td>
+</tr>
+
+## End text_image/text_image-desktop.vm ###################
+
+#elseif( $ROW.getChild('TYPE').getValue() == 'IMAGE_TEXT' )
+
+## Begin image_text/image_text-desktop.vm ###################
+
+#set( $tiLineHeight = '' )
+#set( $style = $ROW.getChild('CONTENT').getChild('style').getValue() )
+#set( $style1 = $ROW.getChild('CONTENT').getChild('style1').getValue() )
+#set( $backgroundColor = $ROW.getChild('CONTENT').getChild('backgroundColor').getValue() )
+
+#if( $theme == 'AAW' )
+	#set( $tiLineHeight = 'line-height:19px;font-size:14px;' )
+#end
+
+#if( $style == 'round' || $style1 == 'round' )
+  #set( $sectRound = 'border-radius:5px;')
+  #set( $sectRoundLeft = 'border-top-left-radius:5px;border-bottom-left-radius:5px;' )
+  #set( $border = '' )
+  #set( $bgcolorRow = '' )
+#else
+  #set( $border = 'border:0;' )
+  #set( $sectRound = '' )
+  #set( $sectRoundLeft = '' )
+#end
+
+#### Non AAW theme & Parent outer table - set background color row
+#if( $backgroundColor != '' && $style != 'round' )
+  #set( $bgcolorRow = 'background-color:' + $backgroundColor + ';' )
+#elseif( $style == 'round' )
+  #set( $bgcolorRow = '' )
+#else
+  #set( $bgcolorRow = 'background-color:#ffffff;' )
+#end
+
+### Set backgroundColor for column td image
+#if( $backgroundColor == 'gray' || $backgroundColor == 'grey' )
+  #set( $bgcolorCol = 'background-color:#fafafa;' )
+  #set( $bgColorRow = 'background-color:#fafafa;' )
+#elseif( $backgroundColor != '' )
+  #set( $bgcolorCol = 'background-color:' + $backgroundColor + ';' )
+#else
+  #set( $bgcolorCol = 'background-color:#ffffff;' )
+#end
+
+#if( $style == 'body-text-sm' || $style1 == 'body-text-sm' )
+	#set( $bodyFont = 'body-text-sm' )
+#else
+	#set( $bodyFont = 'body-text' )
+#end
+
+#if( $localeDirRTL == 'true' )
+  #set( $localeDirLeft = 'dir="ltr"' )
+#else
+  #set( $localeDirLeft = '' )
+#end
+
+<tr>
+	<td $localeDirLeft width="740" style="width:740px;">
+		<table cellpadding="0" cellspacing="0" width="740" style="width:740px;">
+      <tr>
+				#if( $theme == 'AAW' )
+				<td width="450" style="width:450px;min-width:450px;$sectRoundLeft$bgcolorCol">
+					<div class="text-image-$counter">
+						<img class="nohide" src="$ROW.getChild('CONTENT').getChild('imageSource').getValue()" alt="" width="450" style="display: block;outline:0;$border$sectRoundLeft">
+					</div>
+				</td>
+				#else
+				<td width="370" style="width:370px;min-width:370px;$sectRoundLeft">
+					<div class="text-image-$counter">
+						<a href="${text.powerful_solutions_link_text_url}" style="display:block;outline:0;border:0;">
+							<img class="nohide" src="$ROW.getChild('CONTENT').getChild('imageSource').getValue()" alt="" width="370" style="display: block;outline:0;$border$sectRoundLeft">
+						</a>
+					</div>
+				</td>
+				#end
+      #if( $theme == 'AAW' )
+				<td dir="$localeDir" valign="middle" style="padding:0 30px 0 15px;vertical-align:middle;">
+      #else
+        <td dir="$localeDir" valign="middle" style="padding:0 60px 0 20px;vertical-align:middle;$bgcolorRow">
+      #end
+					<table cellpadding="0" cellspacing="0">
+						#if( $ROW.getChild('CONTENT').getChild('headLine').getValue() != '' )
+						<tr>
+							<td style="padding:5px 0 8px 0">
+								<p style="font-size:18px;font-weight:600;line-height:25px;">$ROW.getChild('CONTENT').getChild('headLine').getValue()</p>
+							</td>
+						</tr>
+						#end
+						#if( $ROW.getChild('CONTENT').getChild('body').getValue() != '' )
+						<tr>
+							<td style="padding-bottom:10px;">
+								<p class="$bodyFont">$ROW.getChild('CONTENT').getChild('body').getValue()</p>
+							</td>
+						</tr>
+						#end
+						#if( $ROW.getChild('CONTENT').getChild('buttonOrLink').getValue() == 'link' && $ROW.getChild('CONTENT').getChild('buttonOrLinkTitle').getValue() != '' )
+						<tr>
+							<td style="padding-bottom:12px;">
+								<p class="$bodyFont">
+									## Link source check
+									#if( $ROW.getChild('CONTENT').getChild('buttonOrLinkSource').getValue() != '' )
+									<a class="aapl-link" href="$ROW.getChild('CONTENT').getChild('buttonOrLinkSource').getValue()" style="color:#0070C9;">
+										$ROW.getChild('CONTENT').getChild('buttonOrLinkTitle').getValue()<img class="nohide" src="$arrowImg" width="9" height="8" style="display:inline;margin:0;" border="0" alt="">
+									</a>
+									#end
+									## End link source check
+									#elseif( $ROW.getChild('CONTENT').getChild('buttonOrLink').getValue() == 'button' )
+									<div class="cta" style="width:${ROW.getChild('CONTENT').getChild('buttonImageWidth').getValue()}px;height:${ROW.getChild('CONTENT').getChild('buttonImageHeight').getValue()}px">
+										<a href="$ROW.getChild('CONTENT').getChild('buttonOrLinkSource').getValue()" style="display:inline-block; width:${ROW.getChild('CONTENT').getChild('buttonImageWidth').getValue()}px;height:${ROW.getChild('CONTENT').getChild('buttonImageHeight').getValue()}px">
+											<img src="$ROW.getChild('CONTENT').getChild('buttonImageSource').getValue()" width="${ROW.getChild('CONTENT').getChild('buttonImageWidth').getValue()}" height="${ROW.getChild('CONTENT').getChild('buttonImageHeight').getValue()}" style="display:block;margin:0;" border="0" alt="${ROW.getChild('CONTENT').getChild('buttonOrLinkTitle').getValue()}">
+										</a>
+									</div>
+								</p>
+							</td>
+						</tr>
+						#end
+					</table>
+				</td>
+			</tr>
+		</table>
+	</td>
+</tr>
+
+## End image_text/image_text-desktop.vm ###################
+
+#elseif( $ROW.getChild('TYPE').getValue() == 'TEXT_TEXT' )
+
+## Begin text_text/text_text-desktop.vm ###################
+
+### Set backgroundColor
+#if( $ROW.getChild('CONTENT').getChild('backgroundColor').getValue() != '' )
+  #set( $bgcolorText = $ROW.getChild('CONTENT').getChild('backgroundColor').getValue() )
+#else
+  #set( $bgcolorText = '#fafafa' )
+#end
+
+### style / styl1
+#set( $style = $ROW.getChild('CONTENT').getChild('style').getValue() )
+#set( $style1 = $ROW.getChild('CONTENT').getChild('style1').getValue() )
+
+#### Set each column padding depending on background color. Else is any color besides white
+#if( $bgcolorText.contains('fff') || $bgcolorText == 'white' )
+  #set( $padding = '35px 40px 60px' )
+  #set( $padLeft = '' )
+  #set( $padRight = '' )
+#else
+  #if( $localeDirRTL == "true" )
+    #set( $padLeft = '60px 50px 60px 20px' )
+    #set( $padRight = '60px 20px 60px 50px' )
+    #set( $padding = '' )
+  #else
+	  #set( $padding = '60px 40px' )
+    #set( $padLeft = '' )
+    #set( $padRight = '' )
+  #end
+#end
+
+#if( $ROW.getChild('CONTENT').getChild('body').getValue() != '' && $style.contains('px') )
+  #if( $localeDirRTL == "true" )
+    #set( $colPad = 'padding-right:' + $style + ';')
+  #else
+    #set( $colPad = 'padding-left:' + $style + ';')
+  #end
+#elseif( $ROW.getChild('CONTENT').getChild('body').getValue() != '' && $style1.contains('px') )
+  #if( $localeDirRTL == "true" )
+    #set( $colPad = 'padding-right:' + $style1 + ';')
+  #else
+    #set( $colPad = 'padding-left:' + $style1 + ';')
+  #end
+#else
+  #set( $colPad = '' )
+#end
+
+### Set class font size
+#if( !$style.contains('px') && $style != '' )
+  #set( $headFont = $style + ' semibold' )
+#elseif( $style.contains('px') && $style1 != '' )
+  #set( $headFont = $style1 + ' semibold' )
+#elseif( $style.contains('px') && $style1 == '' || $style == '' &&  $style1 == '' || $style == '' )
+  #set( $headFont = 'header' )
+#else
+  #set( $headFont = 'header' )
+#end
+
+#if( !$style.contains('px') && $style1 == '' )
+  #set( $bodyFont = $style )
+#elseif( $style1 != '' )
+  #set( $bodyFont = $style1 )
+#elseif( $style.contains('px') && $style1 == '' || $style == '' &&  $style1 == '' || $style == '' )
+  #set( $bodyFont = 'body-text')
+#else
+  #set( $bodyFont = 'body-text')
+#end
+
+	<tr>
+		<td dir="$localeDir" width="740" style="width:740px;min-width:740px;background-color:$bgcolorText;">
+			<table cellpadding="0" cellspacing="0" width="740" style="width:740px;min-width:740px;">
+				<tr>
+					<td dir="$localeDir" style="vertical-align:top;background-color:$bgcolorText;padding:$padding$padLeft;width:50%;" width="370">
+						#if( $ROW.getChild('CONTENT').getChild('headLine').getValue() != '' )
+							<p class="$headFont" style="padding-bottom:10px;$colPad">$ROW.getChild('CONTENT').getChild('headLine').getValue()</span>
+						#end
+              <p style="$colPad" class="$bodyFont">
+						#if( $ROW.getChild('CONTENT').getChild('body').getValue() != '' )
+							$ROW.getChild('CONTENT').getChild('body').getValue()
+						#end
+						#if( $ROW.getChild('CONTENT').getChild('buttonOrLink').getValue() == 'link' && $ROW.getChild('CONTENT').getChild('buttonOrLinkTitle').getValue() != '' )
+							#if( $ROW.getChild('CONTENT').getChild('buttonOrLinkSource').getValue() != '' )
+								<br><br>
+								<a class="aapl-link" href="$ROW.getChild('CONTENT').getChild('buttonOrLinkSource').getValue()" style="color:#0070C9;">
+								$ROW.getChild('CONTENT').getChild('buttonOrLinkTitle').getValue()<img class="nohide" src="$arrowImg" width="9" height="8" style="display:inline;margin:0" border="0" alt="">
+								</a>
+								#end
+							#elseif( $ROW.getChild('CONTENT').getChild('buttonOrLink').getValue() == 'button' )
+								#if( $ROW.getChild('CONTENT').getChild('buttonOrLinkSource').getValue() != '' )
+								<br><br>
+								<div class="cta" style="width:${ROW.getChild('CONTENT').getChild('buttonImageWidth').getValue()}px;height:${ROW.getChild('CONTENT').getChild('buttonImageHeight').getValue()}px">
+									<a href="$ROW.getChild('CONTENT').getChild('buttonOrLinkSource').getValue()" style="display:inline-block; width:${ROW.getChild('CONTENT').getChild('buttonImageWidth').getValue()}px;height:${ROW.getChild('CONTENT').getChild('buttonImageHeight').getValue()}px">
+										<img src="$ROW.getChild('CONTENT').getChild('buttonImageSource').getValue()" width="${ROW.getChild('CONTENT').getChild('buttonImageWidth').getValue()}" height="${ROW.getChild('CONTENT').getChild('buttonImageHeight').getValue()}" style="display:block;margin:0;" border="0" alt="${ROW.getChild('CONTENT').getChild('buttonOrLinkTitle').getValue()}">
+									</a>
+								</div>
+							#end
+						#end
+						</p>
+					</td>
+					<td dir="$localeDir" style="vertical-align: top;background-color:$bgcolorText;padding:$padding$padRight;width:50%;" width="370">
+						#if( $ROW.getChild('CONTENT').getChild('headLine1').getValue() != '' )
+							<p class="$headFont" style="padding-bottom:10px;">$ROW.getChild('CONTENT').getChild('headLine1').getValue()</p>
+						#end
+              <p class="$bodyFont">
+							#if( $ROW.getChild('CONTENT').getChild('body1').getValue() != '' )
+								$ROW.getChild('CONTENT').getChild('body1').getValue()
+							#end
+							#if( $ROW.getChild('CONTENT').getChild('buttonOrLink1').getValue() == 'link' && $ROW.getChild('CONTENT').getChild('buttonOrLinkTitle1').getValue() != '' )
+								#if( $ROW.getChild('CONTENT').getChild('buttonOrLinkSource1').getValue() != '' )
+								<br><br>
+								<a class="aapl-link" href="$ROW.getChild('CONTENT').getChild('buttonOrLinkSource1').getValue()" style="color:#0070C9;">
+									$ROW.getChild('CONTENT').getChild('buttonOrLinkTitle1').getValue()<img class="nohide" src="$arrowImg" width="9" height="8" style="display:inline;margin:0" border="0" alt="">
+								</a>
+								#end
+							#elseif( $ROW.getChild('CONTENT').getChild('buttonOrLink1').getValue() == 'button' )
+								#if( $ROW.getChild('CONTENT').getChild('buttonOrLinkSource1').getValue() != '' )
+								<br><br>
+								<div class="cta" style="width:${ROW.getChild('CONTENT').getChild('buttonImageWidth1').getValue()}px;height:${ROW.getChild('CONTENT').getChild('buttonImageHeight1').getValue()}px">
+									<a href="$ROW.getChild('CONTENT').getChild('buttonOrLinkSource1').getValue()" style="display:inline-block; width:${ROW.getChild('CONTENT').getChild('buttonImageWidth1').getValue()}px;height:${ROW.getChild('CONTENT').getChild('buttonImageHeight1').getValue()}px">
+										<img src="$ROW.getChild('CONTENT').getChild('buttonImageSource1').getValue()" width="${ROW.getChild('CONTENT').getChild('buttonImageWidth1').getValue()}" height="${ROW.getChild('CONTENT').getChild('buttonImageHeight1').getValue()}" style="display:block;margin:0;" border="0" alt="${ROW.getChild('CONTENT').getChild('buttonOrLinkTitle1').getValue()}">
+									</a>
+								</div>
+								#end
+							#end
+						</p>
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+  ### Empty 25px height spacer below the gray TEXT_TEXT and above copy
+  #if( $bgcolorText.contains('fafafa') || $bgcolorText.contains('gray') || $bgcolorText.contains('grey') )
+  <tr>
+    <td width="740" height="25" style="height:25px;width:740px;line-height;25px;">&nbsp;</td>
+  </tr>
+  #end
+
+## End text_text/text_text-desktop.vm ###################
+
+#elseif( $ROW.getChild('TYPE').getValue() == 'SIGNOFF_TEXT' )
+
+## Begin signoff_text/signoff_text-desktop.vm ###################
+
+	#set( $signoffTextPad = '25px 125px 37px 50px' )
+	#set( $bgcolor2SignOff = $ROW.getChild('CONTENT').getChild('backgroundColor').getValue() )
+
+	#if( $bgcolor2SignOff == "" )
+		#set( $bgcolor2SignOff = "#ffffff" )
+	#end
+	#if( $theme == 'AAW' )
+		#set( $signoffTextColor = '#666666' )
+	#else
+		#set( $signoffTextColor = '#333333' )
+	#end
+
+  #if( $localeDirRTL == "true" )
+    #set( $alignText = 'right' )
+    #set( $signoffTextPad = '25px 50px 37px 125px' )
+  #else
+    #set( $alignText = 'left' )
+    #set( $signoffTextPad = '25px 125px 37px 50px' )
+  #end
+      <tr>
+        <td dir="$localeDir" style="font-size:14px;line-height:20px;padding:$signoffTextPad;background-color:#ffffff;" align="$alignText" class="msofix">
+          <p style="font-family:-apple-system,-webkit-system-font,SFNSText,'Segoe UI',system,'Helvetica Neue',Arial,sans-serif;font-weight:400;-webkit-font-smoothing:antialiased; margin: 0;color:$signoffTextColor;">
+          #if( $ROW.getChild('CONTENT').getChild('signOffGreeting').getValue() != '' )
+            <span style="font-size: 17px;">$ROW.getChild('CONTENT').getChild('signOffGreeting').getValue()</span><br><br>
+          #end
+          #if( $ROW.getChild('CONTENT').getChild('signOffName').getValue() != '' )
+            $ROW.getChild('CONTENT').getChild('signOffName').getValue()<br>
+          #end
+          #if( $ROW.getChild('CONTENT').getChild('signOffSubName').getValue() != '' )
+            $ROW.getChild('CONTENT').getChild('signOffSubName').getValue()<br>
+          #end
+          #if( $ROW.getChild('CONTENT').getChild('signOffPhoneNumber').getValue() != '' )
+            #if( $localeDirRTL == 'true' )<span dir="ltr">#end$ROW.getChild('CONTENT').getChild('signOffPhoneNumber').getValue()#if( $localeDirRTL == 'true' )</span>#end<br>
+          #end
+          #if( $ROW.getChild('CONTENT').getChild('signOffLinkTitle').getValue() != '' )
+            <a style="color:#0070C9;" class="aapl-link" href="$ROW.getChild('CONTENT').getChild('signOffLinkSource').getValue()">$ROW.getChild('CONTENT').getChild('signOffLinkTitle').getValue()</a>
+          #end
+          </p>
+        </td>
+      </tr>
+
+## End signoff_text/signoff_text-desktop.vm ###################
+
+## Begin footnote-desktop ###################
+#elseif( $ROW.getChild('TYPE').getValue() == 'FOOTNOTE' )
+
+#set( $alignment = $ROW.getChild('CONTENT').getChild('alignment').getValue() )
+
+### set alignment to align text. Default is left.
+#if( $alignment == 'right' || $localeDirRTL ==  "true" )
+  #set( $alignText = 'right' )
+#elseif( $alignment != '' && $localeDirRTL ==  'false' )
+  #set( $alignText = $alignment )
+#else
+  #set( $alignText = 'left' )
+#end
+
+#### Alignment padding
+#if( $alignText == 'right' || $localeDirRTL == 'true' && $alignText != 'center' )
+  #set( $bodyPad = '5px 50px 10px 75px')
+#elseif( $alignText == 'center' )
+   #set( $bodyPad = '5px 90px 10px')
+###### Left alignment padding
+#else
+  #set( $bodyPad = '5px 75px 10px 50px')
+#end
+
+  #if( $ROW.getChild('CONTENT').getChild('body').getValue() != '' )
+  <tr>
+    <td dir="$localeDir" class="footnote" width="740" valign="top" align="$alignText" class="msofix" style="padding:$bodyPad;width:740px;">
+    #if( $ROW.getChild('CONTENT').getChild('headLine').getValue() != '' )<sup>$ROW.getChild('CONTENT').getChild('headLine').getValue()</sup>#end$ROW.getChild('CONTENT').getChild('body').getValue() #if( $ROW.getChild('CONTENT').getChild('buttonOrLink').getValue() == 'link' && $ROW.getChild('CONTENT').getChild('buttonOrLinkTitle').getValue() != '' )<a href="$ROW.getChild('CONTENT').getChild('buttonOrLinkSource').getValue()">$ROW.getChild('CONTENT').getChild('buttonOrLinkTitle').getValue()</a>$localePunc#end
+    </td>
+  </tr>
+  #end
+  #if( $ROW.getChild('CONTENT').getChild('body1').getValue() != '' )
+  <tr>
+    <td dir="$localeDir" class="footnote" width="740" valign="top" align="$alignText" class="msofix" style="padding:$bodyPad;width:740px;">
+    #if( $ROW.getChild('CONTENT').getChild('headLine1').getValue() != '' )<sup>$ROW.getChild('CONTENT').getChild('headLine1').getValue()</sup>#end$ROW.getChild('CONTENT').getChild('body1').getValue() #if( $ROW.getChild('CONTENT').getChild('buttonOrLink1').getValue() == 'link' && $ROW.getChild('CONTENT').getChild('buttonOrLinkTitle1').getValue() != '' )<a href="$ROW.getChild('CONTENT').getChild('buttonOrLinkSource1').getValue()">$ROW.getChild('CONTENT').getChild('buttonOrLinkTitle1').getValue()</a>$localePunc#end
+	  </td>
+  </tr>
+  #end
+
+## End footnote-desktop ###################
+
+
+#set( $lastRowType = $ROW.getChild('TYPE').getValue() )
+
+#elseif( $ROW.getChild('TYPE').getValue() == 'SECTION_BREAK' )
+
+## Begin section_break-desktop ###################
+
+#if( $ROW.getChild('CONTENT').getChild('style').getValue() != '' )
+  #set( $sectionBreakHeight = $ROW.getChild('CONTENT').getChild('style').getValue() )
+#else
+  #set( $sectionBreakHeight = '12px')
+#end
+
+#set( $sectionBreakRounded = "" )
+#if( $ROW.getChild('CONTENT').getChild('style1').getValue() != "" )
+	#set( $sectionBreakRounded = $ROW.getChild('CONTENT').getChild('style1').getValue() )
+#end
+    </table>
+	</td>
+</tr>
+	<tr>
+		<td style="padding:0 20px 0 20px; background:#f2f2f2; line-height:$sectionBreakHeight; height:$sectionBreakHeight;">&nbsp;</td>
+	</tr>
+  <tr>
+	<td align="center" width="740" style="width:740px;border-radius:5px;background-color:#ffffff;">
+		<table bgcolor="#ffffff" align="center" cellpadding="0" cellspacing="0" width="740" style="width:740px;border-radius:5px;">
+## End section_break-desktop ###################
+#end
+
+#end
+
+ </table>
+	  </td>
+ </tr>
+
+## The response requires the footer to be in the ROWS
+#foreach( $ROW in $ROWS )
+	#if( $ROW.getChild('TYPE').getValue() == 'FOOTER' )
+
+## Begin base/footer-desktop.vm ###################
+ #if(($locale.matches("th_TH")) || ($locale.matches("zh_CN")) || ($locale.matches("zh_MO")) || ($locale.matches("zh_HK")) || ($locale.matches("zh_TW")))
+   #set( $unsubSpace = "")
+ #else
+   #set( $unsubSpace = "&nbsp;")
+ #end
+
+		<tr>
+			<td dir="$localeDir" class="aapl-desktop" style="padding:12px 20px 0 20px;" bgcolor="#f2f2f2" align="center">
+				<table width="700" border="0" cellspacing="0" cellpadding="0" align="center" style="margin:0 auto; width:700px;">
+					<tr>
+						<td dir="$localeDir" style="font-family:-apple-system,-webkit-system-font,SFNSText,Segoe UI,system,Helvetica Neue,sans-serif;font-weight:400;-webkit-font-smoothing:antialiased;font-size:12px;line-height:18px;color:#999999;padding:19px 0 29px 0;" id="aapl-footer">
+							<p style="padding:0 0 8px 0;" class="aapl-footer-addr">
+								<span style="color:#888888;">$ROW.getChild('CONTENT').getChild('copyrightText').getValue() $ROW.getChild('CONTENT').getChild('appleHQ').getValue()</span>
+							</p>
+							<p dir="$localeDir" style="padding:0 0 8px 0;">
+								<span style="color:#d6d6d6;"><a href="$ROW.getChild('CONTENT').getChild('legalUrl').getValue()" style="color:#555555;">$ROW.getChild('CONTENT').getChild('legalText').getValue()</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp; <a href="$ROW.getChild('CONTENT').getChild('privacyPolicyUrl').getValue()" style="color:#555555;">$ROW.getChild('CONTENT').getChild('privacyPolicy').getValue()</a>&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp; <a href="$ROW.getChild('CONTENT').getChild('appleIdUrl').getValue()" style="color:#555555;">$ROW.getChild('CONTENT').getChild('appleId').getValue()</a></span>
+							</p>
+              <p dir="$localeDir" style="padding:0 0 8px 0; color:#888888;" class="msofix-f-legal aapl-footer-link">
+              ## UnsubscribeMessage, UrlText, Url fields
+
+              #if( $ROW.getChild('CONTENT').getChild('unsubscribe').getChild('url').getValue() != '' &&  $ROW.getChild('CONTENT').getChild('unsubscribe').getChild('urlText').getValue() != '')
+                #if(($locale.matches("nl_BE")) || ($locale.matches("nl_NL")) || ($locale.matches("sv_SE")))
+                  <a href="$ROW.getChild('CONTENT').getChild('unsubscribe').getChild('url').getValue()">$ROW.getChild('CONTENT').getChild('unsubscribe').getChild('urlText').getValue()</a> $ROW.getChild('CONTENT').getChild('unsubscribe').getChild('message').getValue()
+
+                #else
+                  $ROW.getChild('CONTENT').getChild('unsubscribe').getChild('message').getValue()$unsubSpace<a href="$ROW.getChild('CONTENT').getChild('unsubscribe').getChild('url').getValue()">$ROW.getChild('CONTENT').getChild('unsubscribe').getChild('urlText').getValue()</a></span>$localeUnsub$localePunc
+                #end
+              #else
+                $ROW.getChild('CONTENT').getChild('unsubscribe').getChild('message').getValue()
+                </span>
+							#end
+              </p>
+						</td>
+					</tr>
+				</table>
+			</td>
+		</tr>
+## End base/footer-desktop.vm ###################
+		#end
+	#end
+	</table>
+
+</body>
+</html>
